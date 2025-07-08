@@ -1,0 +1,26 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Evita barras de desplazamiento si el canvas es justo el tamaño de la ventana */
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-color: #f0f0f0;
+}
+
+canvas {
+  display: block; /* Elimina cualquier espacio extra que pueda añadir el navegador por defecto */
+  background-color: rgba(255, 255, 255, 0.8); /* Fondo blanco semi-transparente para el canvas */
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  /* No establecer height/width fijo aquí, se hace en JS */
+}
