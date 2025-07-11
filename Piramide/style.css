@@ -1,0 +1,132 @@
+body {
+  background-color: #d1d1d1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; /* Asegura que el body ocupe toda la altura de la ventana */
+  margin: 0;
+  overflow: hidden; /* Evita barras de desplazamiento si la pirámide se mueve fuera de la vista */
+}
+
+.pyramid-loader {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  display: flex; /* Usar flexbox para centrar el wrapper */
+  justify-content: center;
+  align-items: center;
+  transform-style: preserve-3d;
+  transform: rotateX(-20deg); /* Inclinación inicial de la pirámide */
+  perspective: 500px; /* Añadido para efectos 3D como translateZ */
+}
+
+.wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  /*
+   * Elige solo una de las siguientes animaciones descomentando la línea deseada.
+   * Las animaciones de "movimiento por la página" están limitadas al contenedor de 300x300px
+   * debido a la estructura actual del HTML/CSS.
+   */
+  animation: pyramid-animation 4s linear infinite; /* Animación por defecto: Rotación Vertical */
+}
+
+@keyframes pyramid-animation {
+  /* 1. Rotación Vertical (original) */
+  0% {
+    transform: rotateX(0deg);
+  }
+  100% {
+    transform: rotateX(360deg);
+  }
+
+  /* 2. Rotación Horizontal */
+  /* 0% { transform: rotateY(0deg); }
+  100% { transform: rotateY(360deg); } */
+
+  /* 3. Movimiento Vertical (oscilante) */
+  /* 0% { transform: translateY(0); } 
+  50% { transform: translateY(-50px); }
+  100% { transform: translateY(0); }  */
+
+  /* 4. Movimiento Horizontal (oscilante) */
+  /* 0% { transform: translateX(0); } 
+  50% { transform: translateX(50px); } 
+  100% { transform: translateX(0); }  */
+
+  /* 5. Movimiento Diagonal (oscilante) */
+  /* 0% { transform: translate(0, 0); }
+  50% { transform: translate(50px, -50px); } 
+  100% { transform: translate(0, 0); } */
+
+  /* 6. Mover de Izquierda a Derecha (limitado al contenedor) */
+  /* 0% { transform: translateX(-100px); }
+  100% { transform: translateX(100px); } */
+
+  /* 7. Mover de Arriba a Abajo (limitado al contenedor) */
+  /* 0% { transform: translateY(-100px); }
+  100% { transform: translateY(100px); } */
+
+  /* 8. Movimiento Diagonal por la página (limitado al contenedor) */
+  /* 0% { transform: translate(-100px, -100px); }
+  100% { transform: translate(100px, 100px); } */
+
+  /* 9. Acercarse o Alejarse (escalado) */
+  /* 0% { transform: scale(1); }
+  50% { transform: scale(4.5); }
+  100% { transform: scale(1); } */
+
+  /* 10. Acercarse o Alejarse (perspectiva 3D) */
+  /* 0% { transform: translateZ(0); }
+  50% { transform: translateZ(400px); }
+  100% { transform: translateZ(0); } */
+}
+
+.pyramid-loader .wrapper .side {
+  width: 70px;
+  height: 70px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  transform-origin: center top;
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+
+.pyramid-loader .wrapper .side1 {
+  transform: rotateZ(-30deg) rotateY(90deg);
+  background: rgb(235, 42, 42);
+}
+
+.pyramid-loader .wrapper .side2 {
+  transform: rotateZ(30deg) rotateY(90deg);
+  background: rgb(47, 0, 255);
+}
+
+.pyramid-loader .wrapper .side3 {
+  transform: rotateX(30deg);
+  background: rgb(0, 255, 0);
+}
+
+.pyramid-loader .wrapper .side4 {
+  transform: rotateX(-30deg);
+  background: rgb(255, 196, 0);
+}
+
+.pyramid-loader .wrapper .base {
+  width: 70px;
+  height: 70px;
+  background: #e0e0e0;
+  position: absolute;
+  top: 41%;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  /* Gira y posiciona la base en la parte inferior */
+  transform: rotateX(90deg) translateZ(35px);
+}
