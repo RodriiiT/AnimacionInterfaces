@@ -17,26 +17,29 @@ document.addEventListener('DOMContentLoaded', () => {
             color: '#FF7F50', // 1. Naranja (pequeño)
             legLength: 45,
             startX: 202, startY: 243, startRotation: 0, initialZ: 0,
-            endX: 50, endY: 250, endRotation: -45, endZ: 50, // Se mueve hacia adelante
-            depthThickness: 10, // Grosor de la pieza
-            depthDirection: 'forward' // Dirección por defecto
+            // Naranja: Diagonal hacia la izquierda y abajo
+            endX: 50, endY: 300, endRotation: -45, endZ: 50,
+            // depthThickness: 10, // Grosor de la pieza
+            depthDirection: 'forward' // Mantener la profundidad si no se especifica un cambio
         },
         {
             type: 'rect',
             color: '#00B050', // 2. Verde (cuadrado)
             width: 45, height: 45,
-            startX: 376, startY: 70, startRotation: 45, initialZ: 0,
-            endX: 500, endY: 80, endRotation: 0, endZ: 30,
+            startX: 382, startY: 63, startRotation: 90, initialZ: 0,
+            // Verde: hacia arriba (disminuir endY)
+            endX: 382, endY: 10, endRotation: 0, endZ: 30,
             depthThickness: 10,
-            depthDirection: 'forward'
+            depthDirection: 'backward'
         },
         {
             type: 'triangle',
             color: '#008080', // 3. Teal (pequeño)
             legLength: 45,
             startX: 382, startY: 108, startRotation: 90, initialZ: 0,
-            endX: 550, endY: 150, endRotation: 135, endZ: 40,
-            depthThickness: 10,
+            // Teal: hacia la derecha (aumentar endX)
+            endX: 550, endY: 108, endRotation: 135, endZ: 40,
+            // depthThickness: 10,
             depthDirection: 'forward'
         },
         {
@@ -44,8 +47,9 @@ document.addEventListener('DOMContentLoaded', () => {
             color: '#FF00FF', // 4. Fucsia (grande)
             legLength: 90,
             startX: 292, startY: 154, startRotation: 0, initialZ: 0,
-            endX: 100, endY: 100, endRotation: 20, endZ: 60,
-            depthThickness: 10,
+            // Fucsia: hacia la derecha (aumentar endX)
+            endX: 500, endY: 154, endRotation: 20, endZ: 60,
+            // depthThickness: 10,
             depthDirection: 'forward'
         },
         {
@@ -53,26 +57,29 @@ document.addEventListener('DOMContentLoaded', () => {
             color: '#000080', // 5. Azul (grande)
             legLength: 90,
             startX: 292, startY: 243, startRotation: 180, initialZ: 0,
-            endX: 580, endY: 300, endRotation: 220, endZ: 70,
-            depthThickness: 10,
-            depthDirection: 'right' // Profundidad hacia la derecha
+            // Azul: hacia la izquierda (disminuir endX)
+            endX: 50, endY: 243, endRotation: 220, endZ: 70,
+            // depthThickness: 10,
+            depthDirection: 'forward'
         },
         {
             type: 'parallelogram',
             color: '#FFDB58', // 6. Amarillo (paralelogramo)
             baseWidth: 48, height: 45, skewOffset: 45,
             startX: 248, startY: 266, startRotation: 180, initialZ: 0,
-            endX: 80, endY: 350, endRotation: 135, endZ: 55,
-            depthThickness: 10,
-            depthDirection: 'right' // Profundidad hacia la derecha
+            // Paralelogramo: hacia abajo (aumentar endY)
+            endX: 248, endY: 350, endRotation: 135, endZ: 55,
+            // depthThickness: 10,
+            depthDirection: 'forward'
         },
         {
             type: 'triangle',
             color: '#800080', // 7. Morado (mediano)
             legLength: 65,
             startX: 337, startY: 108, startRotation: 45, initialZ: 0,
-            endX: 300, endY: 500, endRotation: 90, endZ: 45,
-            depthThickness: 10,
+            // Morado: hacia arriba (disminuir endY)
+            endX: 337, endY: 10, endRotation: 90, endZ: 45,
+            // depthThickness: 10,
             depthDirection: 'forward'
         }
     ];
@@ -106,12 +113,20 @@ document.addEventListener('DOMContentLoaded', () => {
         let offsetY = 0;
 
         // Determinar el offset de la extrusión basado en depthDirection
+        // 'forward' y 'backward' tienen un ligero desplazamiento diagonal para una mejor ilusión 3D.
+        // 'up', 'down', 'left', 'right' tienen un desplazamiento puramente cardinal.
         if (depthDirection === 'right') {
             offsetX = thickness;
-            offsetY = 0; // No hay desplazamiento vertical para extrusión puramente a la derecha
+            offsetY = 0;
         } else if (depthDirection === 'left') {
             offsetX = -thickness;
             offsetY = 0;
+        } else if (depthDirection === 'up') {
+            offsetX = 0;
+            offsetY = -thickness;
+        } else if (depthDirection === 'down') {
+            offsetX = 0;
+            offsetY = thickness;
         } else if (depthDirection === 'forward') { // Default: abajo-derecha
             offsetX = thickness * 0.5;
             offsetY = thickness * 0.5;
@@ -165,74 +180,95 @@ document.addEventListener('DOMContentLoaded', () => {
     // drawRect con profundidad y dirección
     function drawRect(color, x, y, z, width, height, rotation, thickness, depthDirection = 'forward') {
         ctx.save();
-        ctx.translate(x + width / 2, y + height / 2);
+        ctx.translate(x + width / 2, y + height / 2); // Rotar alrededor del centro
         ctx.rotate(rotation * Math.PI / 180);
 
         const darkColor = darkenColor(color, 0.2);
-        let offsetX = 0;
-        let offsetY = 0;
+        let ox = 0; // offset x (usado para la extrusión)
+        let oy = 0; // offset y (usado para la extrusión)
 
+        // Ajustar offset según la dirección de extrusión
         if (depthDirection === 'right') {
-            offsetX = thickness;
-            offsetY = 0;
+            ox = thickness;
         } else if (depthDirection === 'left') {
-            offsetX = -thickness;
-            offsetY = 0;
-        } else if (depthDirection === 'forward') {
-            offsetX = thickness * 0.5;
-            offsetY = thickness * 0.5;
-        } else if (depthDirection === 'backward') {
-            offsetX = -thickness * 0.5;
-            offsetY = -thickness * 0.5;
+            ox = -thickness;
+        } else if (depthDirection === 'up') {
+            oy = -thickness;
+        } else if (depthDirection === 'down') {
+            oy = thickness;
+        } else if (depthDirection === 'forward') { // Diagonal abajo-derecha (la más común para 2.5D)
+            ox = thickness * 0.5;
+            oy = thickness * 0.5;
+        } else if (depthDirection === 'backward') { // Diagonal arriba-izquierda
+            ox = -thickness * 0.5;
+            oy = -thickness * 0.5;
         }
 
         const halfW = width / 2;
         const halfH = height / 2;
 
         // Vértices de la cara frontal (relativos al centro 0,0)
-        const v1x = -halfW, v1y = -halfH; // Top-left
-        const v2x = halfW, v2y = -halfH; // Top-right
-        const v3x = halfW, v3y = halfH;   // Bottom-right
-        const v4x = -halfW, v4y = halfH;  // Bottom-left
+        const v1 = { x: -halfW, y: -halfH }; // Top-left
+        const v2 = { x: halfW, y: -halfH };  // Top-right
+        const v3 = { x: halfW, y: halfH };   // Bottom-right
+        const v4 = { x: -halfW, y: halfH };  // Bottom-left
 
-        // --- Dibujar caras laterales de la extrusión ---
+        // Vértices de la cara trasera (desplazados)
+        const v1_back = { x: v1.x + ox, y: v1.y + oy };
+        const v2_back = { x: v2.x + ox, y: v2.y + oy };
+        const v3_back = { x: v3.x + ox, y: v3.y + oy };
+        const v4_back = { x: v4.x + ox, y: v4.y + oy };
+
+        // --- Dibujar caras laterales y trasera (ordenadas por profundidad) ---
         ctx.fillStyle = darkColor;
 
-        // Cara superior
+        // Cara trasera (se dibuja primero para estar "detrás")
         ctx.beginPath();
-        ctx.moveTo(v1x, v1y); // Front top-left
-        ctx.lineTo(v1x + offsetX, v1y + offsetY); // Back top-left
-        ctx.lineTo(v2x + offsetX, v2y + offsetY); // Back top-right
-        ctx.lineTo(v2x, v2y); // Front top-right
+        ctx.moveTo(v1_back.x, v1_back.y);
+        ctx.lineTo(v2_back.x, v2_back.y);
+        ctx.lineTo(v3_back.x, v3_back.y);
+        ctx.lineTo(v4_back.x, v4_back.y);
         ctx.closePath();
         ctx.fill();
 
-        // Cara derecha
-        ctx.beginPath();
-        ctx.moveTo(v2x, v2y); // Front top-right
-        ctx.lineTo(v2x + offsetX, v2y + offsetY); // Back top-right
-        ctx.lineTo(v3x + offsetX, v3y + offsetY); // Back bottom-right
-        ctx.lineTo(v3x, v3y); // Front bottom-right
-        ctx.closePath();
-        ctx.fill();
+        // Dibujar caras laterales condicionalmente para evitar redundancia o "collapsing"
+        // y para asegurar la perspectiva correcta
+        if (ox > 0) { // Si hay extrusión hacia la derecha (dibujar cara derecha)
+            ctx.beginPath();
+            ctx.moveTo(v2.x, v2.y);
+            ctx.lineTo(v2_back.x, v2_back.y);
+            ctx.lineTo(v3_back.x, v3_back.y);
+            ctx.lineTo(v3.x, v3.y);
+            ctx.closePath();
+            ctx.fill();
+        } else if (ox < 0) { // Si hay extrusión hacia la izquierda (dibujar cara izquierda)
+            ctx.beginPath();
+            ctx.moveTo(v4.x, v4.y);
+            ctx.lineTo(v4_back.x, v4_back.y);
+            ctx.lineTo(v1_back.x, v1_back.y);
+            ctx.lineTo(v1.x, v1.y);
+            ctx.closePath();
+            ctx.fill();
+        }
 
-        // Cara inferior
-        ctx.beginPath();
-        ctx.moveTo(v3x, v3y); // Front bottom-right
-        ctx.lineTo(v3x + offsetX, v3y + offsetY); // Back bottom-right
-        ctx.lineTo(v4x + offsetX, v4y + offsetY); // Back bottom-left
-        ctx.lineTo(v4x, v4y); // Front bottom-left
-        ctx.closePath();
-        ctx.fill();
+        if (oy > 0) { // Si hay extrusión hacia abajo (dibujar cara inferior)
+            ctx.beginPath();
+            ctx.moveTo(v3.x, v3.y);
+            ctx.lineTo(v3_back.x, v3_back.y);
+            ctx.lineTo(v4_back.x, v4_back.y);
+            ctx.lineTo(v4.x, v4.y);
+            ctx.closePath();
+            ctx.fill();
+        } else if (oy < 0) { // Si hay extrusión hacia arriba (dibujar cara superior)
+            ctx.beginPath();
+            ctx.moveTo(v1.x, v1.y);
+            ctx.lineTo(v1_back.x, v1_back.y);
+            ctx.lineTo(v2_back.x, v2_back.y);
+            ctx.lineTo(v2.x, v2.y);
+            ctx.closePath();
+            ctx.fill();
+        }
 
-        // Cara izquierda
-        ctx.beginPath();
-        ctx.moveTo(v4x, v4y); // Front bottom-left
-        ctx.lineTo(v4x + offsetX, v4y + offsetY); // Back bottom-left
-        ctx.lineTo(v1x + offsetX, v1y + offsetY); // Back top-left
-        ctx.lineTo(v1x, v1y); // Front top-left
-        ctx.closePath();
-        ctx.fill();
 
         // --- Dibujar la cara principal (frontal) ---
         ctx.fillStyle = color;
@@ -257,6 +293,12 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (depthDirection === 'left') {
             offsetX = -thickness;
             offsetY = 0;
+        } else if (depthDirection === 'up') {
+            offsetX = 0;
+            offsetY = -thickness;
+        } else if (depthDirection === 'down') {
+            offsetX = 0;
+            offsetY = thickness;
         } else if (depthDirection === 'forward') {
             offsetX = thickness * 0.5;
             offsetY = thickness * 0.5;
@@ -341,9 +383,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let animationStartTime = 0;
     let animationFrameId;
 
-    const INITIAL_PAUSE_DURATION = 1000; // 1 segundo de pausa inicial con la figura ensamblada
-    const DISASSEMBLE_DURATION = 2000; // 2 segundos para desarmar
-    const REASSEMBLE_DURATION = 2000; // 2 segundos para rearmar
+    const INITIAL_PAUSE_DURATION = 500; // 0.5 segundos de pausa inicial con la figura ensamblada (más rápido)
+    const DISASSEMBLE_DURATION = 1500; // 1.5 segundos para desarmar (más rápido)
+    const REASSEMBLE_DURATION = 1500; // 1.5 segundos para rearmar (más rápido)
 
     const CYCLE_DURATION = INITIAL_PAUSE_DURATION + DISASSEMBLE_DURATION + REASSEMBLE_DURATION;
 
@@ -397,15 +439,19 @@ document.addEventListener('DOMContentLoaded', () => {
             const currentRotation = lerp(p.startRotation, p.endRotation, progress);
             const currentZ = lerp(p.initialZ, p.endZ, progress);
 
+            // Se añade el thickness a las propiedades de la pieza para que sea usado en el dibujo.
+            // Si la pieza no tiene un depthThickness definido, se usa 0 para no mostrar extrusión.
+            const pieceThickness = p.depthThickness !== undefined ? p.depthThickness : 0;
+
             switch (p.type) {
                 case 'triangle':
-                    drawTriangle(p.color, currentX, currentY, currentZ, p.legLength, p.legLength, currentRotation, p.depthThickness, p.depthDirection);
+                    drawTriangle(p.color, currentX, currentY, currentZ, p.legLength, p.legLength, currentRotation, pieceThickness, p.depthDirection);
                     break;
                 case 'rect':
-                    drawRect(p.color, currentX, currentY, currentZ, p.width, p.height, currentRotation, p.depthThickness, p.depthDirection);
+                    drawRect(p.color, currentX, currentY, currentZ, p.width, p.height, currentRotation, pieceThickness, p.depthDirection);
                     break;
                 case 'parallelogram':
-                    drawParallelogram(p.color, currentX, currentY, currentZ, p.baseWidth, p.height, p.skewOffset, currentRotation, p.depthThickness, p.depthDirection);
+                    drawParallelogram(p.color, currentX, currentY, currentZ, p.baseWidth, p.height, p.skewOffset, currentRotation, pieceThickness, p.depthDirection);
                     break;
             }
         });
