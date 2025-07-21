@@ -6,55 +6,40 @@ document.addEventListener("DOMContentLoaded", () => {
   const DESIGN_HEIGHT = 400
 
   const pieces = [
-    {
-      type: "rect",
-      color: "#00B050", // 2. Verde (cuadrado)
-      width: 45,
+     {
+      type: "parallelogram",
+      color: "#FFDB58", // 6. Amarillo (paralelogramo) - EXTENDIDO
+      baseWidth: 50, // ⭐ AUMENTADO de 45 a 67 para llenar el espacio
       height: 45,
-      startX: 272.3,
-      startY: 124.9,
+      skewOffset: 45, // Inverted for mirror effect
+      startX: 224.6, // ⭐ AJUSTADO ligeramente la posición X para centrar mejor
+      startY: 211.8,
       startRotation: 90,
       initialZ: 0,
-      // Verde: hacia abajo (aumentar endY)
-      endX: 238,
-      endY: 350,
-      endRotation: 0,
-      endZ: 30,
-      //depthThickness: 15, // Activated
-      depthDirection: "backward",
+      // Paralelogramo: //hacia la izquierda y luego arriba
+      endX: -100, // Modified: Moved further right
+      endY: 100,
+      endRotation: 135,
+      endZ: 55,
+      depthThickness: 14, // Activated
+      depthDirection: ["backward"], 
     },
-
-    {
-      type: "triangle",
-      color: "#FF7F50", // 1. Naranja (pequeño) - Moverlo aquí para que actúe luego.
-      legLength: 45,
-      startX: 340.5,
-      startY: 207.6,
-      startRotation: 0,
-      initialZ: 0,
-      // Naranja: hacia la derecha
-      endX: 550,
-      endY: 286,
-      endRotation: -45,
-      endZ: 50,
-      //depthThickness: 12, // Activated
-      depthDirection: ["down", "left"],
-    },
+    
     {
       type: "triangle",
       color: "#800080", // 7. Morado (mediano)
       legLength: 65,
-      startX: 294.2,
-      startY: 215.3,
+      startX: 295.8,
+      startY: 216,
       startRotation: 135,
       initialZ: 0,
-      // Morado: hacia abajo y luego hacia la derecha
-      endX: 450, // Ajustado para ir más a la derecha después de bajar
+      // Morado: //hacia la izquierda
+      endX: -10, // Ajustado para ir más a la derecha después de bajar
       endY: 380, // Ajustado para bajar más
       endRotation: 90,
       endZ: 45,
-      //depthThickness: 13, // Activated
-      depthDirection: ["down"],
+      depthThickness: 13, // Activated
+      depthDirection: ["left"],
     },
 
     {
@@ -65,49 +50,30 @@ document.addEventListener("DOMContentLoaded", () => {
       startY: 214.7,
       startRotation: 45,
       initialZ: 0,
-      // Azul: hacia la izquierda (disminuir endX)
-      endX: 50,
-      endY: 240,
-      endRotation: 220,
-      endZ: 70,
-      //depthThickness: 16, // Activated
-      depthDirection: "down",
+      // Azul: hacia la abajo
+      endX: 500,
+      endY: 300,
+      endRotation: 90,
+      endZ: 0,
+      depthThickness: 13, // Activated
+      depthDirection: ["up"],
     },
     {
       type: "triangle",
       color: "#FF00FF", // 4. Fucsia (grande)
       legLength: 90,
       startX: 340,
-      startY: 169.8,
+      startY: 170,
       startRotation: 90,
       initialZ: 0,
-      // Fucsia: hacia arriba y hacia la izquierda
+      // Fucsia: arriba
       endX: 180, // Ajustado para ir más a la izquierda
       endY: 10, // Se mantiene arriba
       endRotation: 20,
       endZ: 60,
-      //depthThickness: 18, // Activated
+      depthThickness: 18, // Activated
       depthDirection: "backward",
     },
-    {
-      type: "parallelogram",
-      color: "#FFDB58", // 6. Amarillo (paralelogramo) - EXTENDIDO
-      baseWidth: 50, // ⭐ AUMENTADO de 45 a 67 para llenar el espacio
-      height: 45,
-      skewOffset: 45, // Inverted for mirror effect
-      startX: 224.6, // ⭐ AJUSTADO ligeramente la posición X para centrar mejor
-      startY: 211.8,
-      startRotation: 90,
-      initialZ: 0,
-      // Paralelogramo: hacia la derecha (aumentar endX)
-      endX: 550, // Modified: Moved further right
-      endY: 196,
-      endRotation: 135,
-      endZ: 55,
-      //depthThickness: 14, // Activated
-      depthDirection: ["down"],
-    },
-
     {
       type: "triangle",
       color: "#008080", // 3. Teal (pequeño)
@@ -116,13 +82,48 @@ document.addEventListener("DOMContentLoaded", () => {
       startY: 207.8,
       startRotation: 180,
       initialZ: 0,
-      // Teal: hacia arriba y hacia la derecha
+      // Teal: derecha full
       endX: 550, // Adjusted to go further right
       endY: -50, // Modified: Moved further up
       endRotation: 135,
       endZ: 40,
-      //depthThickness: 17, // Activated
-      depthDirection: ["forward", "up"],
+      depthThickness: 12.3, // Activated
+      depthDirection: ["left"],
+    },
+    {
+      type: "triangle",
+      color: "#FF7F50", // 1. Naranja (pequeño) - Moverlo aquí para que actúe luego.
+      legLength: 45,
+      startX: 340.5,
+      startY: 207.6,
+      startRotation: 0,
+      initialZ: 0,
+      // Naranja: hacia abajo y luego derecha
+      endX: 550,
+      endY: 286,
+      endRotation: -45,
+      endZ: 50,
+      depthThickness: 12, // Activated
+      depthDirection: ["right"],
+    },
+   
+
+    {
+      type: "rect",
+      color: "#00B050", // 2. Verde (cuadrado)
+      width: 45,
+      height: 45,
+      startX: 272,
+      startY: 125,
+      startRotation: 90,
+      initialZ: 0,
+      // Verde: hacia arriba y luego hacia la derecha
+      endX: 238,
+      endY: -50,
+      endRotation: 0,
+      endZ: 30,
+      depthThickness: 15, // Activated
+      depthDirection: "backward",
     },
   ]
 
