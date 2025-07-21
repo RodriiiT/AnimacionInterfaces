@@ -1,3 +1,4 @@
+/* Existing styles */
 html,
 body {
   margin: 0;
@@ -8,13 +9,12 @@ body {
 }
 
 body {
-  /*
   background-image: url('image.png');
-  background-size: cover; 
-  background-repeat: no-repeat; 
-  background-attachment: fixed; 
-  background-position: center center; 
-  */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center center;
+  
   display: flex;
   justify-content: center;
   align-items: center;
@@ -30,4 +30,63 @@ canvas {
   background-color: rgba(255, 255, 255, 0.8); /* Fondo blanco semi-transparente para el canvas */
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
   /* No establecer height/width fijo aquí, se hace en JS */
+}
+
+/* New styles for properties panel */
+.properties-panel {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    font-family: sans-serif;
+    display: none; /* Hidden by default, shown when a piece is selected */
+    max-width: 250px;
+}
+
+.properties-panel h2 {
+    margin-top: 0;
+    font-size: 1.2em;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.properties-panel p {
+    margin: 5px 0;
+    font-size: 0.9em;
+    color: #555;
+}
+
+.properties-panel p strong {
+    color: #222;
+}
+
+.control-group {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.control-group label {
+    font-size: 0.9em;
+    color: #555;
+    flex-grow: 1;
+}
+
+.control-group input[type="checkbox"],
+.control-group select {
+    margin-left: 10px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+.control-group select {
+    width: auto;
 }
