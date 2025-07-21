@@ -6,8 +6,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const DESIGN_HEIGHT = 400
 
   const pieces = [
-    
-    
     {
       type: "rect",
       color: "#00B050", // 2. Verde (cuadrado)
@@ -25,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
       depthThickness: 15, // Activated
       depthDirection: "backward",
     },
-    
+
     {
       type: "triangle",
       color: "#FF7F50", // 1. Naranja (pequeño) - Moverlo aquí para que actúe luego.
@@ -40,9 +38,8 @@ document.addEventListener("DOMContentLoaded", () => {
       endRotation: -45,
       endZ: 50,
       depthThickness: 12, // Activated
-      depthDirection: ["down","left"],
+      depthDirection: ["down", "left"],
     },
-    
     {
       type: "triangle",
       color: "#800080", // 7. Morado (mediano)
@@ -59,6 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
       depthThickness: 13, // Activated
       depthDirection: ["down"],
     },
+
     {
       type: "triangle",
       color: "#000080", // 5. Azul (grande)
@@ -91,25 +89,25 @@ document.addEventListener("DOMContentLoaded", () => {
       depthThickness: 18, // Activated
       depthDirection: "backward",
     },
-    
     {
       type: "parallelogram",
-      color: "#FFDB58", // 6. Amarillo (paralelogramo)
-      baseWidth: 45,
+      color: "#FFDB58", // 6. Amarillo (paralelogramo) - EXTENDIDO
+      baseWidth: 48, // ⭐ AUMENTADO de 45 a 67 para llenar el espacio
       height: 45,
       skewOffset: -45, // Inverted for mirror effect
-      startX: 350.5,
-      startY: 195,
+      startX: 350.5, // ⭐ AJUSTADO ligeramente la posición X para centrar mejor
+      startY: 194,
       startRotation: 270,
       initialZ: 0,
       // Paralelogramo: hacia la derecha (aumentar endX)
-      endX: 500,
+      endX: 550, // Modified: Moved further right
       endY: 196,
       endRotation: 135,
       endZ: 55,
       depthThickness: 14, // Activated
       depthDirection: ["down"],
     },
+
     {
       type: "triangle",
       color: "#008080", // 3. Teal (pequeño)
@@ -119,14 +117,13 @@ document.addEventListener("DOMContentLoaded", () => {
       startRotation: 0,
       initialZ: 0,
       // Teal: hacia arriba y hacia la derecha
-      endX: 550, // Ajustado para ir más a la derecha
-      endY: 10, // Se mantiene arriba
+      endX: 550, // Adjusted to go further right
+      endY: -50, // Modified: Moved further up
       endRotation: 135,
       endZ: 40,
       depthThickness: 17, // Activated
       depthDirection: ["forward", "up"],
     },
-    
   ]
 
   // --- Helper para obtener un color más oscuro (para la profundidad) ---
@@ -150,30 +147,7 @@ document.addEventListener("DOMContentLoaded", () => {
     )
   }
 
-  // --- Funciones de dibujo (modificadas para la extrusión y dirección) ---
-
-  function darkenColor(hex, percent) {
-    const f = Number.parseInt(hex.slice(1), 16),
-      t = percent < 0 ? 0 : 255,
-      p = percent < 0 ? percent * -1 : percent,
-      R = f >> 16,
-      G = (f >> 8) & 0x00ff,
-      B = f & 0x0000ff
-    return (
-      "#" +
-      (
-        0x1000000 +
-        (Math.round((t - R) * p) + R) * 0x10000 +
-        (Math.round((t - G) * p) + G) * 0x100 +
-        (Math.round((t - B) * p) + B)
-      )
-        .toString(16)
-        .slice(1)
-    )
-  }
-
   // --- Funciones de dibujo modificadas ---
-
   function drawTriangle(
     color,
     x,
@@ -540,7 +514,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function drawScene(progress = 0) {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
-    const scale = Math.min(canvas.width / DESIGN_WIDTH, canvas.height / DESIGN_HEIGHT)
+    const scale = Math.min(
+      canvas.width / DESIGN_WIDTH,
+      canvas.height / DESIGN_HEIGHT,
+    )
     const offsetX = (canvas.width - DESIGN_WIDTH * scale) / 2
     const offsetY = (canvas.height - DESIGN_HEIGHT * scale) / 2
 
@@ -554,7 +531,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const currentRotation = lerp(p.startRotation, p.endRotation, progress)
       const currentZ = lerp(p.initialZ, p.endZ, progress)
 
-      const pieceThickness = p.depthThickness !== undefined ? p.depthThickness : 0
+      const pieceThickness =
+        p.depthThickness !== undefined ? p.depthThickness : 0
 
       switch (p.type) {
         case "triangle":
