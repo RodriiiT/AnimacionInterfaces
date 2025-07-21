@@ -1,94 +1,139 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const canvas = document.getElementById("tangramCanvas");
-  const ctx = canvas.getContext("2d");
-  const propertiesPanel = document.getElementById("propertiesPanel");
-  const propType = document.getElementById("propType");
-  const propColor = document.getElementById("propColor");
-  const propX = document.getElementById("propX");
-  const propY = document.getElementById("propY");
-  const propRotation = document.getElementById("propRotation");
-  const propSize = document.getElementById("propSize");
-  const propThickness = document.getElementById("propThickness");
-  // New DOM elements for inversion and 3D controls
-  const propFlipX = document.getElementById("propFlipX");
-  const propFlipY = document.getElementById("propFlipY");
-  const propIs3D = document.getElementById("propIs3D");
-  const propDepthDirection = document.getElementById("propDepthDirection");
+  const canvas = document.getElementById("tangramCanvas")
+  const ctx = canvas.getContext("2d")
 
-  const DESIGN_WIDTH = 600;
-  const DESIGN_HEIGHT = 400;
+  const DESIGN_WIDTH = 600
+  const DESIGN_HEIGHT = 400
 
-  // Initial piece data (from script.js assembled state)
-  let pieces = [
+  const pieces = [
     {
-      type: "triangle", color: "#000080", legLength: 90,
-      x: 293.7, y: 214.7, rotation: 45, z: 0,
-      depthThickness: 16, depthDirection: "backward",
-      flipX: false, flipY: false, is3D: true, // Added flip and is3D
-      originalDepthThickness: 16, // Store original for 3D toggle
+      type: "rect",
+      color: "#00B050", // 2. Verde (cuadrado)
+      width: 45,
+      height: 45,
+      startX: 272.3,
+      startY: 124.9,
+      startRotation: 90,
+      initialZ: 0,
+      // Verde: hacia abajo (aumentar endY)
+      endX: 238,
+      endY: 350,
+      endRotation: 0,
+      endZ: 30,
+      //depthThickness: 15, // Activated
+      depthDirection: "backward",
     },
-    {
-      type: "triangle", color: "#FF7F50", legLength: 45,
-      x: 340.5, y: 207.6, rotation: 0, z: 0,
-      depthThickness: 12, depthDirection: "right",
-      flipX: false, flipY: false, is3D: true, // Added flip and is3D
-      originalDepthThickness: 12, // Store original for 3D toggle
-    },
-    {
-      type: "rect", color: "#00B050", width: 45, height: 45,
-      x: 272.3, y: 124.9, rotation: 90, z: 0,
-      depthThickness: 15, depthDirection: "backward",
-      flipX: false, flipY: false, is3D: true, // Added flip and is3D
-      originalDepthThickness: 15, // Store original for 3D toggle
-    },
-    {
-      type: "triangle", color: "#008080", legLength: 55,
-      x: 384.5, y: 207.8, rotation: 180, z: 0,
-      depthThickness: 10, depthDirection: "backward",
-      flipX: false, flipY: false, is3D: true, // Added flip and is3D
-      originalDepthThickness: 10, // Store original for 3D toggle
-    },
-    {
-      type: "parallelogram", color: "#FFDB58", baseWidth: 50, height: 45, skewOffset: 45,
-      x: 224.6, y: 211.8, rotation: 90, z: 0,
-      depthThickness: 14, depthDirection: "backward",
-      flipX: false, flipY: false, is3D: true, // Added flip and is3D
-      originalDepthThickness: 14, // Store original for 3D toggle
-    },
-    {
-      type: "triangle", color: "#800080", legLength: 65,
-      x: 294.2, y: 215.3, rotation: 135, z: 0,
-      depthThickness: 13, depthDirection: "right",
-      flipX: false, flipY: false, is3D: true, // Added flip and is3D
-      originalDepthThickness: 13, // Store original for 3D toggle
-    },
-    {
-      type: "triangle", color: "#FF00FF", legLength: 90,
-      x: 340, y: 169.8, rotation: 90, z: 0,
-      depthThickness: 18, depthDirection: "forward",
-      flipX: false, flipY: false, is3D: true, // Added flip and is3D
-      originalDepthThickness: 18, // Store original for 3D toggle
-    },
-  ];
 
-  let selectedPiece = null;
-  let isDragging = false;
-  let isResizing = false;
-  let dragStartX, dragStartY;
-  let resizeHandle = null; // 'top-left', 'top-right', etc. or 'rotate'
+    {
+      type: "triangle",
+      color: "#FF7F50", // 1. Naranja (pequeño) - Moverlo aquí para que actúe luego.
+      legLength: 45,
+      startX: 340.5,
+      startY: 207.6,
+      startRotation: 0,
+      initialZ: 0,
+      // Naranja: hacia la derecha
+      endX: 550,
+      endY: 286,
+      endRotation: -45,
+      endZ: 50,
+      //depthThickness: 12, // Activated
+      depthDirection: ["down", "left"],
+    },
+    {
+      type: "triangle",
+      color: "#800080", // 7. Morado (mediano)
+      legLength: 65,
+      startX: 294.2,
+      startY: 215.3,
+      startRotation: 135,
+      initialZ: 0,
+      // Morado: hacia abajo y luego hacia la derecha
+      endX: 450, // Ajustado para ir más a la derecha después de bajar
+      endY: 380, // Ajustado para bajar más
+      endRotation: 90,
+      endZ: 45,
+      //depthThickness: 13, // Activated
+      depthDirection: ["down"],
+    },
 
-  let currentScale = 1;
-  let currentOffsetX = 0;
-  let currentOffsetY = 0;
+    {
+      type: "triangle",
+      color: "#000080", // 5. Azul (grande)
+      legLength: 90,
+      startX: 293.7,
+      startY: 214.7,
+      startRotation: 45,
+      initialZ: 0,
+      // Azul: hacia la izquierda (disminuir endX)
+      endX: 50,
+      endY: 240,
+      endRotation: 220,
+      endZ: 70,
+      //depthThickness: 16, // Activated
+      depthDirection: "down",
+    },
+    {
+      type: "triangle",
+      color: "#FF00FF", // 4. Fucsia (grande)
+      legLength: 90,
+      startX: 340,
+      startY: 169.8,
+      startRotation: 90,
+      initialZ: 0,
+      // Fucsia: hacia arriba y hacia la izquierda
+      endX: 180, // Ajustado para ir más a la izquierda
+      endY: 10, // Se mantiene arriba
+      endRotation: 20,
+      endZ: 60,
+      //depthThickness: 18, // Activated
+      depthDirection: "backward",
+    },
+    {
+      type: "parallelogram",
+      color: "#FFDB58", // 6. Amarillo (paralelogramo) - EXTENDIDO
+      baseWidth: 50, // ⭐ AUMENTADO de 45 a 67 para llenar el espacio
+      height: 45,
+      skewOffset: 45, // Inverted for mirror effect
+      startX: 224.6, // ⭐ AJUSTADO ligeramente la posición X para centrar mejor
+      startY: 211.8,
+      startRotation: 90,
+      initialZ: 0,
+      // Paralelogramo: hacia la derecha (aumentar endX)
+      endX: 550, // Modified: Moved further right
+      endY: 196,
+      endRotation: 135,
+      endZ: 55,
+      //depthThickness: 14, // Activated
+      depthDirection: ["down"],
+    },
 
-  // Helper functions
+    {
+      type: "triangle",
+      color: "#008080", // 3. Teal (pequeño)
+      legLength: 45,
+      startX: 384.5,
+      startY: 207.8,
+      startRotation: 180,
+      initialZ: 0,
+      // Teal: hacia arriba y hacia la derecha
+      endX: 550, // Adjusted to go further right
+      endY: -50, // Modified: Moved further up
+      endRotation: 135,
+      endZ: 40,
+      //depthThickness: 17, // Activated
+      depthDirection: ["forward", "up"],
+    },
+  ]
+
+  // --- Helper para obtener un color más oscuro (para la profundidad) ---
   function darkenColor(hex, percent) {
-    const f = parseInt(hex.slice(1), 16),
+    const f = Number.parseInt(hex.slice(1), 16),
       t = percent < 0 ? 0 : 255,
       p = percent < 0 ? percent * -1 : percent,
       R = f >> 16,
       G = (f >> 8) & 0x00ff,
-      B = f & 0x0000ff;
+      B = f & 0x0000ff
     return (
       "#" +
       (
@@ -99,742 +144,456 @@ document.addEventListener("DOMContentLoaded", () => {
       )
         .toString(16)
         .slice(1)
-    );
+    )
   }
 
-  // Drawing functions (kept mostly the same, adapted to current piece properties)
+  // --- Funciones de dibujo modificadas ---
   function drawTriangle(
     color,
     x,
     y,
+    z,
+    legWidth,
+    legHeight,
     rotation,
-    legWidth, // Using legWidth directly
-    legHeight, // Using legHeight directly
     thickness,
-    depthDirection = "forward",
-    drawHandles = false,
-    flipX = false,
-    flipY = false
+    depthDirection = "forward", // Puede ser string o array de strings
   ) {
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.rotate((rotation * Math.PI) / 180);
-    ctx.scale(flipX ? -1 : 1, flipY ? -1 : 1); // Apply flip
+    ctx.save()
+    ctx.translate(x, y)
+    ctx.rotate((rotation * Math.PI) / 180)
 
-    const darkColor = darkenColor(color, 0.3);
-    let ox = 0;
-    let oy = 0;
+    const darkColor = darkenColor(color, 0.3)
+    let ox = 0
+    let oy = 0
 
+    // ✨ CAMBIO IMPORTANTE AQUÍ: Permitir múltiples direcciones
     const directions = Array.isArray(depthDirection)
       ? depthDirection
-      : [depthDirection];
+      : [depthDirection]
 
     directions.forEach((dir) => {
       if (dir === "right") {
-        ox += thickness;
+        ox += thickness
       } else if (dir === "left") {
-        ox += -thickness;
+        ox += -thickness
       } else if (dir === "up") {
-        oy += -thickness;
+        oy += -thickness
       } else if (dir === "down") {
-        oy += thickness;
+        oy += thickness
       } else if (dir === "forward") {
-        ox += thickness * 0.5;
-        oy += thickness * 0.5;
+        // Diagonal abajo-derecha
+        ox += thickness * 0.5
+        oy += thickness * 0.5
       } else if (dir === "backward") {
-        ox += -thickness * 0.5;
-        oy += -thickness * 0.5;
+        // Diagonal arriba-izquierda
+        ox += -thickness * 0.5
+        oy += -thickness * 0.5
       }
-    });
+    })
 
-    const v1 = { x: 0, y: 0 };
-    const v2 = { x: legWidth, y: 0 };
-    const v3 = { x: 0, y: legHeight };
+    const v1 = { x: 0, y: 0 }
+    const v2 = { x: legWidth, y: 0 }
+    const v3 = { x: 0, y: legHeight }
 
-    const v1_back = { x: v1.x + ox, y: v1.y + oy };
-    const v2_back = { x: v2.x + ox, y: v2.y + oy };
-    const v3_back = { x: v3.x + ox, y: v3.y + oy };
+    const v1_back = { x: v1.x + ox, y: v1.y + oy }
+    const v2_back = { x: v2.x + ox, y: v2.y + oy }
+    const v3_back = { x: v3.x + ox, y: v3.y + oy }
 
-    ctx.fillStyle = darkColor;
-    ctx.beginPath();
-    ctx.moveTo(v1_back.x, v1_back.y);
-    ctx.lineTo(v2_back.x, v2_back.y);
-    ctx.lineTo(v3_back.x, v3_back.y);
-    ctx.closePath();
-    ctx.fill();
+    ctx.fillStyle = darkColor
 
-    ctx.beginPath();
-    ctx.moveTo(v1.x, v1.y);
-    ctx.lineTo(v2.x, v2.y);
-    ctx.lineTo(v2_back.x, v2_back.y);
-    ctx.lineTo(v1_back.x, v1_back.y);
-    ctx.closePath();
-    ctx.fill();
+    ctx.beginPath()
+    ctx.moveTo(v1_back.x, v1_back.y)
+    ctx.lineTo(v2_back.x, v2_back.y)
+    ctx.lineTo(v3_back.x, v3_back.y)
+    ctx.closePath()
+    ctx.fill()
 
-    ctx.beginPath();
-    ctx.moveTo(v2.x, v2.y);
-    ctx.lineTo(v3.x, v3.y);
-    ctx.lineTo(v3_back.x, v3_back.y);
-    ctx.lineTo(v2_back.x, v2_back.y);
-    ctx.closePath();
-    ctx.fill();
+    ctx.beginPath()
+    ctx.moveTo(v1.x, v1.y)
+    ctx.lineTo(v2.x, v2.y)
+    ctx.lineTo(v2_back.x, v2_back.y)
+    ctx.lineTo(v1_back.x, v1_back.y)
+    ctx.closePath()
+    ctx.fill()
 
-    ctx.beginPath();
-    ctx.moveTo(v3.x, v3.y);
-    ctx.lineTo(v1.x, v1.y);
-    ctx.lineTo(v1_back.x, v1_back.y);
-    ctx.lineTo(v3_back.x, v3_back.y);
-    ctx.closePath();
-    ctx.fill();
+    ctx.beginPath()
+    ctx.moveTo(v2.x, v2.y)
+    ctx.lineTo(v3.x, v3.y)
+    ctx.lineTo(v3_back.x, v3_back.y)
+    ctx.lineTo(v2_back.x, v2_back.y)
+    ctx.closePath()
+    ctx.fill()
 
-    ctx.fillStyle = color;
-    ctx.beginPath();
-    ctx.moveTo(v1.x, v1.y);
-    ctx.lineTo(v2.x, v2.y);
-    ctx.lineTo(v3.x, v3.y);
-    ctx.closePath();
-    ctx.fill();
+    ctx.beginPath()
+    ctx.moveTo(v3.x, v3.y)
+    ctx.lineTo(v1.x, v1.y)
+    ctx.lineTo(v1_back.x, v1_back.y)
+    ctx.lineTo(v3_back.x, v3_back.y)
+    ctx.closePath()
+    ctx.fill()
 
-    // Draw handles if selected
-    if (drawHandles) {
-      ctx.fillStyle = 'red';
-      const handleSize = 8;
-      const handles = [
-        {x: v1.x, y: v1.y, name: 'top-left'},
-        {x: v2.x, y: v2.y, name: 'top-right'},
-        {x: v3.x, y: v3.y, name: 'bottom-left'},
-        {x: (v1.x + v2.x + v3.x) / 3, y: (v1.y + v2.y + v3.y) / 3, name: 'rotate'} // Center for rotation
-      ];
-      handles.forEach(h => {
-        ctx.beginPath();
-        ctx.arc(h.x, h.y, handleSize / 2, 0, Math.PI * 2);
-        ctx.fill();
-      });
-    }
+    ctx.fillStyle = color
+    ctx.beginPath()
+    ctx.moveTo(v1.x, v1.y)
+    ctx.lineTo(v2.x, v2.y)
+    ctx.lineTo(v3.x, v3.y)
+    ctx.closePath()
+    ctx.fill()
 
-    ctx.restore();
+    ctx.restore()
   }
 
+  // La función drawRect no necesita cambios a menos que quieras que también soporte múltiples direcciones de profundidad
   function drawRect(
     color,
     x,
     y,
-    rotation,
+    z,
     width,
     height,
+    rotation,
     thickness,
     depthDirection = "forward",
-    drawHandles = false,
-    flipX = false,
-    flipY = false
   ) {
-    ctx.save();
-    ctx.translate(x + width / 2, y + height / 2);
-    ctx.rotate((rotation * Math.PI) / 180);
-    ctx.scale(flipX ? -1 : 1, flipY ? -1 : 1); // Apply flip
+    ctx.save()
+    ctx.translate(x + width / 2, y + height / 2)
+    ctx.rotate((rotation * Math.PI) / 180)
 
-    const darkColor = darkenColor(color, 0.3);
-    let ox = 0;
-    let oy = 0;
+    const darkColor = darkenColor(color, 0.3)
+    let ox = 0
+    let oy = 0
 
+    // ✨ CAMBIO OPCIONAL AQUÍ: Para que drawRect también soporte múltiples direcciones
     const directions = Array.isArray(depthDirection)
       ? depthDirection
-      : [depthDirection];
+      : [depthDirection]
 
     directions.forEach((dir) => {
       if (dir === "right") {
-        ox += thickness;
+        ox += thickness
       } else if (dir === "left") {
-        ox += -thickness;
+        ox += -thickness
       } else if (dir === "up") {
-        oy += -thickness;
+        oy += -thickness
       } else if (dir === "down") {
-        oy += thickness;
+        oy += thickness
       } else if (dir === "forward") {
-        ox += thickness * 0.5;
-        oy += thickness * 0.5;
+        ox += thickness * 0.5
+        oy += thickness * 0.5
       } else if (dir === "backward") {
-        ox += -thickness * 0.5;
-        oy += -thickness * 0.5;
+        ox += -thickness * 0.5
+        oy += -thickness * 0.5
       }
-    });
+    })
 
-    const halfW = width / 2;
-    const halfH = height / 2;
+    const halfW = width / 2
+    const halfH = height / 2
 
-    const v1 = { x: -halfW, y: -halfH };
-    const v2 = { x: halfW, y: -halfH };
-    const v3 = { x: halfW, y: halfH };
-    const v4 = { x: -halfW, y: halfH };
+    const v1 = { x: -halfW, y: -halfH }
+    const v2 = { x: halfW, y: -halfH }
+    const v3 = { x: halfW, y: halfH }
+    const v4 = { x: -halfW, y: halfH }
 
-    const v1_back = { x: v1.x + ox, y: v1.y + oy };
-    const v2_back = { x: v2.x + ox, y: v2.y + oy };
-    const v3_back = { x: v3.x + ox, y: v3.y + oy };
-    const v4_back = { x: v4.x + ox, y: v4.y + oy };
+    const v1_back = { x: v1.x + ox, y: v1.y + oy }
+    const v2_back = { x: v2.x + ox, y: v2.y + oy }
+    const v3_back = { x: v3.x + ox, y: v3.y + oy }
+    const v4_back = { x: v4.x + ox, y: v4.y + oy }
 
-    ctx.fillStyle = darkColor;
+    ctx.fillStyle = darkColor
 
-    ctx.beginPath();
-    ctx.moveTo(v1_back.x, v1_back.y);
-    ctx.lineTo(v2_back.x, v2_back.y);
-    ctx.lineTo(v3_back.x, v3_back.y);
-    ctx.lineTo(v4_back.x, v4_back.y);
-    ctx.closePath();
-    ctx.fill();
+    ctx.beginPath()
+    ctx.moveTo(v1_back.x, v1_back.y)
+    ctx.lineTo(v2_back.x, v2_back.y)
+    ctx.lineTo(v3_back.x, v3_back.y)
+    ctx.lineTo(v4_back.x, v4_back.y)
+    ctx.closePath()
+    ctx.fill()
 
     if (ox > 0) {
-      ctx.beginPath();
-      ctx.moveTo(v2.x, v2.y);
-      ctx.lineTo(v2_back.x, v2_back.y);
-      ctx.lineTo(v3_back.x, v3_back.y);
-      ctx.lineTo(v3.x, v3.y);
-      ctx.closePath();
-      ctx.fill();
+      ctx.beginPath()
+      ctx.moveTo(v2.x, v2.y)
+      ctx.lineTo(v2_back.x, v2_back.y)
+      ctx.lineTo(v3_back.x, v3_back.y)
+      ctx.lineTo(v3.x, v3.y)
+      ctx.closePath()
+      ctx.fill()
     } else if (ox < 0) {
-      ctx.beginPath();
-      ctx.moveTo(v4.x, v4.y);
-      ctx.lineTo(v4_back.x, v4_back.y);
-      ctx.lineTo(v1_back.x, v1_back.y);
-      ctx.lineTo(v1.x, v1.y);
-      ctx.closePath();
-      ctx.fill();
+      ctx.beginPath()
+      ctx.moveTo(v4.x, v4.y)
+      ctx.lineTo(v4_back.x, v4_back.y)
+      ctx.lineTo(v1_back.x, v1_back.y)
+      ctx.lineTo(v1.x, v1.y)
+      ctx.closePath()
+      ctx.fill()
     }
 
     if (oy > 0) {
-      ctx.beginPath();
-      ctx.moveTo(v3.x, v3.y);
-      ctx.lineTo(v3_back.x, v3_back.y);
-      ctx.lineTo(v4_back.x, v4_back.y);
-      ctx.lineTo(v4.x, v4.y);
-      ctx.closePath();
-      ctx.fill();
+      ctx.beginPath()
+      ctx.moveTo(v3.x, v3.y)
+      ctx.lineTo(v3_back.x, v3_back.y)
+      ctx.lineTo(v4_back.x, v4_back.y)
+      ctx.lineTo(v4.x, v4.y)
+      ctx.closePath()
+      ctx.fill()
     } else if (oy < 0) {
-      ctx.beginPath();
-      ctx.moveTo(v1.x, v1.y);
-      ctx.lineTo(v1_back.x, v1_back.y);
-      ctx.lineTo(v2_back.x, v2_back.y);
-      ctx.lineTo(v2.x, v2.y);
-      ctx.closePath();
-      ctx.fill();
+      ctx.beginPath()
+      ctx.moveTo(v1.x, v1.y)
+      ctx.lineTo(v1_back.x, v1_back.y)
+      ctx.lineTo(v2_back.x, v2_back.y)
+      ctx.lineTo(v2.x, v2.y)
+      ctx.closePath()
+      ctx.fill()
     }
 
-    ctx.fillStyle = color;
-    ctx.fillRect(-halfW, -halfH, width, height);
+    ctx.fillStyle = color
+    ctx.fillRect(-halfW, -halfH, width, height)
 
-    // Draw handles if selected
-    if (drawHandles) {
-      ctx.fillStyle = 'red';
-      const handleSize = 8;
-      const handles = [
-        {x: v1.x, y: v1.y, name: 'top-left'},
-        {x: v2.x, y: v2.y, name: 'top-right'},
-        {x: v3.x, y: v3.y, name: 'bottom-right'},
-        {x: v4.x, y: v4.y, name: 'bottom-left'},
-        {x: 0, y: 0, name: 'rotate'} // Center for rotation
-      ];
-      handles.forEach(h => {
-        ctx.beginPath();
-        ctx.arc(h.x, h.y, handleSize / 2, 0, Math.PI * 2);
-        ctx.fill();
-      });
-    }
-
-    ctx.restore();
+    ctx.restore()
   }
 
+  // La función drawParallelogram no necesita cambios a menos que quieras que también soporte múltiples direcciones de profundidad
   function drawParallelogram(
     color,
     x,
     y,
-    rotation,
+    z,
     baseWidth,
     height,
     skewOffset,
+    rotation,
     thickness,
     depthDirection = "forward",
-    drawHandles = false,
-    flipX = false,
-    flipY = false
   ) {
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.rotate((rotation * Math.PI) / 180);
-    ctx.scale(flipX ? -1 : 1, flipY ? -1 : 1); // Apply flip
+    ctx.save()
+    ctx.translate(x, y)
+    ctx.rotate((rotation * Math.PI) / 180)
 
-    const darkColor = darkenColor(color, 0.3);
-    let offsetX = 0;
-    let offsetY = 0;
+    const darkColor = darkenColor(color, 0.3)
+    let offsetX = 0
+    let offsetY = 0
 
+    // ✨ CAMBIO OPCIONAL AQUÍ: Para que drawParallelogram también soporte múltiples direcciones
     const directions = Array.isArray(depthDirection)
       ? depthDirection
-      : [depthDirection];
+      : [depthDirection]
 
     directions.forEach((dir) => {
       if (dir === "right") {
-        offsetX += thickness;
+        offsetX += thickness
       } else if (dir === "left") {
-        offsetX += -thickness;
+        offsetX += -thickness
       } else if (dir === "up") {
-        offsetY += -thickness;
+        offsetY += -thickness
       } else if (dir === "down") {
-        offsetY += thickness;
+        offsetY += thickness
       } else if (dir === "forward") {
-        offsetX += thickness * 0.5;
-        offsetY += thickness * 0.5;
+        offsetX += thickness * 0.5
+        offsetY += thickness * 0.5
       } else if (dir === "backward") {
-        offsetX += -thickness * 0.5;
-        offsetY += -thickness * 0.5;
+        offsetX += -thickness * 0.5
+        offsetY += -thickness * 0.5
       }
-    });
+    })
 
-    const p1x = 0, p1y = 0;
-    const p2x = baseWidth, p2y = 0;
-    const p3x = baseWidth - skewOffset, p3y = height;
-    const p4x = -skewOffset, p4y = height;
+    const p1x = 0,
+      p1y = 0
+    const p2x = baseWidth,
+      p2y = 0
+    const p3x = baseWidth - skewOffset,
+      p3y = height
+    const p4x = -skewOffset,
+      p4y = height
 
-    const minLocalX = Math.min(p1x, p2x, p3x, p4x);
-    const maxLocalX = Math.max(p1x, p2x, p3x, p4x);
-    const minLocalY = Math.min(p1y, p1y, p3y, p4y);
-    const maxLocalY = Math.max(p1y, p2y, p3y, p4y);
-    const centerLocalX = (minLocalX + maxLocalX) / 2;
-    const centerLocalY = (minLocalY + maxLocalY) / 2;
+    const minLocalX = Math.min(p1x, p2x, p3x, p4x)
+    const maxLocalX = Math.max(p1x, p2x, p3x, p4x)
+    const minLocalY = Math.min(p1y, p1y, p3y, p4y)
+    const maxLocalY = Math.max(p1y, p2y, p3y, p4y)
+    const centerLocalX = (minLocalX + maxLocalX) / 2
+    const centerLocalY = (minLocalY + maxLocalY) / 2
 
-    const v1x = p1x - centerLocalX, v1y = p1y - centerLocalY;
-    const v2x = p2x - centerLocalX, v2y = p2y - centerLocalY;
-    const v3x = p3x - centerLocalX, v3y = p3y - centerLocalY;
-    const v4x = p4x - centerLocalX, v4y = p4y - centerLocalY;
+    const v1x = p1x - centerLocalX,
+      v1y = p1y - centerLocalY
+    const v2x = p2x - centerLocalX,
+      v2y = p2y - centerLocalY
+    const v3x = p3x - centerLocalX,
+      v3y = p3y - centerLocalY
+    const v4x = p4x - centerLocalX,
+      v4y = p4y - centerLocalY
 
-    ctx.fillStyle = darkColor;
+    ctx.fillStyle = darkColor
 
-    ctx.beginPath();
-    ctx.moveTo(v1x, v1y);
-    ctx.lineTo(v1x + offsetX, v1y + offsetY);
-    ctx.lineTo(v2x + offsetX, v2y + offsetY);
-    ctx.lineTo(v2x, v2y);
-    ctx.closePath();
-    ctx.fill();
+    ctx.beginPath()
+    ctx.moveTo(v1x, v1y)
+    ctx.lineTo(v1x + offsetX, v1y + offsetY)
+    ctx.lineTo(v2x + offsetX, v2y + offsetY)
+    ctx.lineTo(v2x, v2y)
+    ctx.closePath()
+    ctx.fill()
 
-    ctx.beginPath();
-    ctx.moveTo(v2x, v2y);
-    ctx.lineTo(v2x + offsetX, v2y + offsetY);
-    ctx.lineTo(v3x + offsetX, v3y + offsetY);
-    ctx.lineTo(v3x, v3y);
-    ctx.closePath();
-    ctx.fill();
+    ctx.beginPath()
+    ctx.moveTo(v2x, v2y)
+    ctx.lineTo(v2x + offsetX, v2y + offsetY)
+    ctx.lineTo(v3x + offsetX, v3y + offsetY)
+    ctx.lineTo(v3x, v3y)
+    ctx.closePath()
+    ctx.fill()
 
-    ctx.beginPath();
-    ctx.moveTo(v3x, v3y);
-    ctx.lineTo(v3x + offsetX, v3y + offsetY);
-    ctx.lineTo(v4x + offsetX, v4y + offsetY);
-    ctx.lineTo(v4x, v4y);
-    ctx.closePath();
-    ctx.fill();
+    ctx.beginPath()
+    ctx.moveTo(v3x, v3y)
+    ctx.lineTo(v3x + offsetX, v3y + offsetY)
+    ctx.lineTo(v4x + offsetX, v4y + offsetY)
+    ctx.lineTo(v4x, v4y)
+    ctx.closePath()
+    ctx.fill()
 
-    ctx.beginPath();
-    ctx.moveTo(v4x, v4y);
-    ctx.lineTo(v4x + offsetX, v4y + offsetY);
-    ctx.lineTo(v1x + offsetX, v1y + offsetY);
-    ctx.lineTo(v1x, v1y);
-    ctx.closePath();
-    ctx.fill();
+    ctx.beginPath()
+    ctx.moveTo(v4x, v4y)
+    ctx.lineTo(v4x + offsetX, v4y + offsetY)
+    ctx.lineTo(v1x + offsetX, v1y + offsetY)
+    ctx.lineTo(v1x, v1y)
+    ctx.closePath()
+    ctx.fill()
 
-    ctx.fillStyle = color;
-    ctx.beginPath();
-    ctx.moveTo(v1x, v1y);
-    ctx.lineTo(v2x, v2y);
-    ctx.lineTo(v3x, v3y);
-    ctx.lineTo(v4x, v4y);
-    ctx.closePath();
-    ctx.fill();
+    ctx.fillStyle = color
+    ctx.beginPath()
+    ctx.moveTo(v1x, v1y)
+    ctx.lineTo(v2x, v2y)
+    ctx.lineTo(v3x, v3y)
+    ctx.lineTo(v4x, v4y)
+    ctx.closePath()
+    ctx.fill()
 
-    // Draw handles if selected
-    if (drawHandles) {
-      ctx.fillStyle = 'red';
-      const handleSize = 8;
-      const handles = [
-        {x: v1x, y: v1y, name: 'top-left'},
-        {x: v2x, y: v2y, name: 'top-right'},
-        {x: v3x, y: v3y, name: 'bottom-right'},
-        {x: v4x, y: v4y, name: 'bottom-left'},
-        {x: 0, y: 0, name: 'rotate'} // Center for rotation
-      ];
-      handles.forEach(h => {
-        ctx.beginPath();
-        ctx.arc(h.x, h.y, handleSize / 2, 0, Math.PI * 2);
-        ctx.fill();
-      });
+    ctx.restore()
+  }
+
+  let animationStartTime = 0
+  let animationFrameId
+
+  const INITIAL_PAUSE_DURATION = 500
+  const DISASSEMBLE_DURATION = 1500
+  const REASSEMBLE_DURATION = 1500
+
+  const CYCLE_DURATION =
+    INITIAL_PAUSE_DURATION + DISASSEMBLE_DURATION + REASSEMBLE_DURATION
+
+  function lerp(start, end, t) {
+    return start * (1 - t) + end * t
+  }
+
+  function easeInOutCubic(t) {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
+  }
+
+  function animate(timestamp) {
+    if (!animationStartTime) {
+      animationStartTime = timestamp
     }
 
-    ctx.restore();
-  }
+    const elapsedTime = (timestamp - animationStartTime) % CYCLE_DURATION
 
-  // --- Hit testing functions ---
-  function getTransformedPoint(x, y) {
-    const rect = canvas.getBoundingClientRect();
-    const clientX = x - rect.left;
-    const clientY = y - rect.top;
+    let progress
 
-    // Convert canvas coordinates to design coordinates
-    const designX = (clientX - currentOffsetX) / currentScale;
-    const designY = (clientY - currentOffsetY) / currentScale;
-    return { x: designX, y: designY };
-  }
-
-  function rotatePoint(px, py, cx, cy, angleDeg) {
-    const angleRad = angleDeg * Math.PI / 180;
-    const cos = Math.cos(angleRad);
-    const sin = Math.sin(angleRad);
-    const translatedX = px - cx;
-    const translatedY = py - cy;
-    const rotatedX = translatedX * cos - translatedY * sin;
-    const rotatedY = translatedX * sin + translatedY * cos;
-    return { x: rotatedX + cx, y: rotatedY + cy };
-  }
-
-  function isPointInTriangle(pointX, pointY, triX, triY, rotation, legLength, legHeight) {
-    // Translate point to piece's local coordinate system (origin at triX, triY)
-    // and then rotate it back to 0 degrees for hit testing
-    const rotatedPoint = rotatePoint(pointX, pointY, triX, triY, -rotation);
-    const localX = rotatedPoint.x - triX;
-    const localY = rotatedPoint.y - triY;
-
-    // Triangle vertices in local, unrotated coordinates (0,0), (legLength, 0), (0, legHeight)
-    // Check if point is within the triangle formed by (0,0), (legLength,0), (0,legHeight)
-    // Using barycentric coordinates or line equations
-    const s = localY / legHeight;
-    const t = localX / legLength;
-
-    return (s >= 0 && t >= 0 && (s + t <= 1));
-  }
-
-  function isPointInRect(pointX, pointY, rectX, rectY, rotation, width, height) {
-    // Translate point to rectangle's local coordinate system (origin at center)
-    // and then rotate it back to 0 degrees for hit testing
-    const centerX = rectX + width / 2;
-    const centerY = rectY + height / 2;
-    const rotatedPoint = rotatePoint(pointX, pointY, centerX, centerY, -rotation);
-    const localX = rotatedPoint.x - centerX;
-    const localY = rotatedPoint.y - centerY;
-
-    // Check if within bounds of unrotated rectangle
-    return (localX >= -width / 2 && localX <= width / 2 &&
-            localY >= -height / 2 && localY <= height / 2);
-  }
-
-  function isPointInParallelogram(pointX, pointY, paraX, paraY, rotation, baseWidth, height, skewOffset) {
-    // Translate point to parallelogram's local coordinate system (origin at visual center)
-    const p1x = 0, p1y = 0;
-    const p2x = baseWidth, p2y = 0;
-    const p3x = baseWidth - skewOffset, p3y = height;
-    const p4x = -skewOffset, p4y = height;
-
-    const minLocalX = Math.min(p1x, p2x, p3x, p4x);
-    const maxLocalX = Math.max(p1x, p2x, p3x, p4x);
-    const minLocalY = Math.min(p1y, p1y, p3y, p4y);
-    const maxLocalY = Math.max(p1y, p2y, p3y, p4y);
-    const centerX = paraX + (minLocalX + maxLocalX) / 2;
-    const centerY = paraY + (minLocalY + maxLocalY) / 2;
-
-    const rotatedPoint = rotatePoint(pointX, pointY, centerX, centerY, -rotation);
-    const localX = rotatedPoint.x - centerX;
-    const localY = rotatedPoint.y - centerY;
-
-    // Check if point is within the parallelogram using standard point-in-polygon
-    // This is a simplified check for a parallelogram
-    // Convert to normalized coordinates relative to bounding box and skew
-    const scaledX = localX + skewOffset * (localY / height);
-    return (scaledX >= 0 && scaledX <= baseWidth &&
-            localY >= 0 && localY <= height);
-  }
-
-  function getHandle(pointX, pointY, piece) {
-    const handleSize = 8 / currentScale; // Account for current canvas scale
-
-    let vertices;
-    let centerX, centerY;
-
-    if (piece.type === 'triangle') {
-      vertices = [
-        {x: 0, y: 0},
-        {x: piece.legLength, y: 0},
-        {x: 0, y: piece.legLength}
-      ];
-      centerX = piece.x;
-      centerY = piece.y;
-    } else if (piece.type === 'rect') {
-      vertices = [
-        {x: -piece.width / 2, y: -piece.height / 2},
-        {x: piece.width / 2, y: -piece.height / 2},
-        {x: piece.width / 2, y: piece.height / 2},
-        {x: -piece.width / 2, y: piece.height / 2}
-      ];
-      centerX = piece.x + piece.width / 2;
-      centerY = piece.y + piece.height / 2;
-    } else if (piece.type === 'parallelogram') {
-      const p1x = 0, p1y = 0;
-      const p2x = piece.baseWidth, p2y = 0;
-      const p3x = piece.baseWidth - piece.skewOffset, p3y = piece.height;
-      const p4x = -piece.skewOffset, p4y = piece.height;
-
-      const minLocalX = Math.min(p1x, p2x, p3x, p4x);
-      const maxLocalX = Math.max(p1x, p2x, p3x, p4x);
-      const minLocalY = Math.min(p1y, p1y, p3y, p4y);
-      const maxLocalY = Math.max(p1y, p2y, p3y, p4y);
-
-      vertices = [
-        {x: p1x - (minLocalX + maxLocalX) / 2, y: p1y - (minLocalY + maxLocalY) / 2},
-        {x: p2x - (minLocalX + maxLocalX) / 2, y: p2y - (minLocalY + maxLocalY) / 2},
-        {x: p3x - (minLocalX + maxLocalX) / 2, y: p3y - (minLocalY + maxLocalY) / 2},
-        {x: p4x - (minLocalX + maxLocalX) / 2, y: p4y - (minLocalY + maxLocalY) / 2}
-      ];
-      centerX = piece.x + (minLocalX + maxLocalX) / 2;
-      centerY = piece.y + (minLocalY + maxLocalY) / 2;
-    }
-
-    // Check resize handles
-    for (let i = 0; i < vertices.length; i++) {
-      const v = vertices[i];
-      const rotatedHandle = rotatePoint(v.x + centerX, v.y + centerY, centerX, centerY, piece.rotation);
-      if (Math.abs(pointX - rotatedHandle.x) < handleSize && Math.abs(pointY - rotatedHandle.y) < handleSize) {
-        return ['top-left', 'top-right', 'bottom-right', 'bottom-left'][i % vertices.length];
-      }
-    }
-
-    // Check rotate handle (center of the piece)
-    const rotateHandleX = centerX;
-    const rotateHandleY = centerY;
-    if (Math.abs(pointX - rotateHandleX) < handleSize && Math.abs(pointY - rotateHandleY) < handleSize) {
-        return 'rotate';
-    }
-
-    return null;
-  }
-
-  function isPointInPiece(pointX, pointY, piece) {
-      if (piece.type === 'triangle') {
-          return isPointInTriangle(pointX, pointY, piece.x, piece.y, piece.rotation, piece.legLength, piece.legLength);
-      } else if (piece.type === 'rect') {
-          return isPointInRect(pointX, pointY, piece.x, piece.y, piece.rotation, piece.width, piece.height);
-      } else if (piece.type === 'parallelogram') {
-          return isPointInParallelogram(pointX, pointY, piece.x, piece.y, piece.rotation, piece.baseWidth, piece.height, piece.skewOffset);
-      }
-      return false;
-  }
-
-
-  function updatePropertiesPanel() {
-    if (selectedPiece) {
-      propertiesPanel.style.display = 'block';
-      propType.textContent = selectedPiece.type;
-      propColor.textContent = selectedPiece.color;
-      propX.textContent = selectedPiece.x.toFixed(1);
-      propY.textContent = selectedPiece.y.toFixed(1);
-      propRotation.textContent = selectedPiece.rotation.toFixed(1);
-      propThickness.textContent = selectedPiece.depthThickness.toFixed(1);
-
-      // Set inversion checkboxes
-      propFlipX.checked = selectedPiece.flipX;
-      propFlipY.checked = selectedPiece.flipY;
-
-      // Set 3D toggle
-      propIs3D.checked = selectedPiece.is3D;
-      propDepthDirection.value = selectedPiece.depthDirection;
-
-      let sizeText = '';
-      if (selectedPiece.type === 'triangle') {
-        sizeText = `Lado: ${selectedPiece.legLength.toFixed(1)}`;
-      } else if (selectedPiece.type === 'rect') {
-        sizeText = `Ancho: ${selectedPiece.width.toFixed(1)}, Alto: ${selectedPiece.height.toFixed(1)}`;
-      } else if (selectedPiece.type === 'parallelogram') {
-        sizeText = `Base: ${selectedPiece.baseWidth.toFixed(1)}, Alto: ${selectedPiece.height.toFixed(1)}, Skew: ${selectedPiece.skewOffset.toFixed(1)}`;
-      }
-      propSize.textContent = sizeText;
+    if (elapsedTime < INITIAL_PAUSE_DURATION) {
+      progress = 0
+    } else if (elapsedTime < INITIAL_PAUSE_DURATION + DISASSEMBLE_DURATION) {
+      const currentPhaseProgress =
+        (elapsedTime - INITIAL_PAUSE_DURATION) / DISASSEMBLE_DURATION
+      progress = easeInOutCubic(currentPhaseProgress)
     } else {
-      propertiesPanel.style.display = 'none';
+      const currentPhaseProgress =
+        (elapsedTime - (INITIAL_PAUSE_DURATION + DISASSEMBLE_DURATION)) /
+        REASSEMBLE_DURATION
+      progress = easeInOutCubic(1 - currentPhaseProgress)
     }
+
+    drawScene(progress)
+
+    animationFrameId = requestAnimationFrame(animate)
   }
 
-  // Event listeners for new properties panel controls
-  propFlipX.addEventListener('change', () => {
-    if (selectedPiece) {
-      selectedPiece.flipX = propFlipX.checked;
-      drawScene();
-    }
-  });
+  function drawScene(progress = 0) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    const scale = Math.min(
+      canvas.width / DESIGN_WIDTH,
+      canvas.height / DESIGN_HEIGHT,
+    )
+    const offsetX = (canvas.width - DESIGN_WIDTH * scale) / 2
+    const offsetY = (canvas.height - DESIGN_HEIGHT * scale) / 2
 
-  propFlipY.addEventListener('change', () => {
-    if (selectedPiece) {
-      selectedPiece.flipY = propFlipY.checked;
-      drawScene();
-    }
-  });
+    ctx.save()
+    ctx.translate(offsetX, offsetY)
+    ctx.scale(scale, scale)
 
-  propIs3D.addEventListener('change', () => {
-    if (selectedPiece) {
-      selectedPiece.is3D = propIs3D.checked;
-      if (selectedPiece.is3D) {
-        selectedPiece.depthThickness = selectedPiece.originalDepthThickness || 0;
-      } else {
-        selectedPiece.depthThickness = 0;
+    pieces.forEach((p) => {
+      const currentX = lerp(p.startX, p.endX, progress)
+      const currentY = lerp(p.startY, p.endY, progress)
+      const currentRotation = lerp(p.startRotation, p.endRotation, progress)
+      const currentZ = lerp(p.initialZ, p.endZ, progress)
+
+      const pieceThickness =
+        p.depthThickness !== undefined ? p.depthThickness : 0
+
+      switch (p.type) {
+        case "triangle":
+          drawTriangle(
+            p.color,
+            currentX,
+            currentY,
+            currentZ,
+            p.legLength,
+            p.legLength,
+            currentRotation,
+            pieceThickness,
+            p.depthDirection,
+          )
+          break
+        case "rect":
+          drawRect(
+            p.color,
+            currentX,
+            currentY,
+            currentZ,
+            p.width,
+            p.height,
+            currentRotation,
+            pieceThickness,
+            p.depthDirection,
+          )
+          break
+        case "parallelogram":
+          drawParallelogram(
+            p.color,
+            currentX,
+            currentY,
+            currentZ,
+            p.baseWidth,
+            p.height,
+            p.skewOffset,
+            currentRotation,
+            pieceThickness,
+            p.depthDirection,
+          )
+          break
       }
-      drawScene();
-    }
-  });
-
-  propDepthDirection.addEventListener('change', () => {
-    if (selectedPiece) {
-      selectedPiece.depthDirection = propDepthDirection.value;
-      drawScene();
-    }
-  });
-
-
-  function drawScene() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    currentScale = Math.min(canvas.width / DESIGN_WIDTH, canvas.height / DESIGN_HEIGHT);
-    currentOffsetX = (canvas.width - DESIGN_WIDTH * currentScale) / 2;
-    currentOffsetY = (canvas.height - DESIGN_HEIGHT * currentScale) / 2;
-
-    ctx.save();
-    ctx.translate(currentOffsetX, currentOffsetY);
-    ctx.scale(currentScale, currentScale);
-
-    // Sort pieces by Z-index or drawing order if needed (not implemented here)
-    // For now, draw in array order.
-    pieces.forEach(p => {
-      const drawHandles = (p === selectedPiece);
-      const currentThickness = p.is3D ? p.depthThickness : 0; // Use 0 if 3D is off
-      if (p.type === 'triangle') {
-        drawTriangle(p.color, p.x, p.y, p.rotation, p.legLength, p.legLength, currentThickness, p.depthDirection, drawHandles, p.flipX, p.flipY);
-      } else if (p.type === 'rect') {
-        drawRect(p.color, p.x, p.y, p.rotation, p.width, p.height, currentThickness, p.depthDirection, drawHandles, p.flipX, p.flipY);
-      } else if (p.type === 'parallelogram') {
-        drawParallelogram(p.color, p.x, p.y, p.rotation, p.baseWidth, p.height, p.skewOffset, currentThickness, p.depthDirection, drawHandles, p.flipX, p.flipY);
-      }
-    });
-
-    ctx.restore();
-    updatePropertiesPanel();
+    })
+    ctx.restore()
   }
 
-  // --- Mouse Events for Interaction ---
-  canvas.addEventListener('mousedown', (e) => {
-    const { x, y } = getTransformedPoint(e.clientX, e.clientY);
-
-    // Check if clicking on a resize handle first
-    if (selectedPiece) {
-        resizeHandle = getHandle(x, y, selectedPiece);
-        if (resizeHandle) {
-          isResizing = true;
-          dragStartX = x;
-          dragStartY = y;
-          return;
-        }
+  function startAnimationCycle() {
+    if (animationFrameId) {
+      cancelAnimationFrame(animationFrameId)
     }
+    animationStartTime = 0
+    animationFrameId = requestAnimationFrame(animate)
+  }
 
-    // If not resizing, try to select a piece
-    selectedPiece = null;
-    for (let i = pieces.length - 1; i >= 0; i--) { // Iterate backwards to select top-most piece
-      const piece = pieces[i];
-      if (isPointInPiece(x, y, piece)) {
-        selectedPiece = piece;
-        isDragging = true;
-        dragStartX = x;
-        dragStartY = y;
-        // Bring selected piece to front (optional, but good for interaction)
-        pieces.splice(i, 1);
-        pieces.push(selectedPiece);
-        break;
-      }
-    }
-    drawScene();
-  });
-
-  canvas.addEventListener('mousemove', (e) => {
-    if (!selectedPiece) return;
-
-    const { x, y } = getTransformedPoint(e.clientX, e.clientY);
-    const dx = x - dragStartX;
-    const dy = y - dragStartY;
-
-    if (isDragging) {
-      selectedPiece.x += dx;
-      selectedPiece.y += dy;
-    } else if (isResizing) {
-      if (resizeHandle === 'rotate') {
-        let centerX, centerY;
-        if (selectedPiece.type === 'triangle') {
-            centerX = selectedPiece.x;
-            centerY = selectedPiece.y;
-        } else if (selectedPiece.type === 'rect') {
-            centerX = selectedPiece.x + selectedPiece.width / 2;
-            centerY = selectedPiece.y + selectedPiece.height / 2;
-        } else if (selectedPiece.type === 'parallelogram') {
-            const p1x = 0, p1y = 0; const p2x = selectedPiece.baseWidth, p2y = 0;
-            const p3x = selectedPiece.baseWidth - selectedPiece.skewOffset, p3y = selectedPiece.height;
-            const p4x = -selectedPiece.skewOffset, p4y = selectedPiece.height;
-            const minLocalX = Math.min(p1x, p2x, p3x, p4x); const maxLocalX = Math.max(p1x, p2x, p3x, p4x);
-            const minLocalY = Math.min(p1y, p1y, p3y, p4y); const maxLocalY = Math.max(p1y, p2y, p3y, p4y);
-            centerX = selectedPiece.x + (minLocalX + maxLocalX) / 2;
-            centerY = selectedPiece.y + (minLocalY + maxLocalY) / 2;
-        }
-
-        const angleRad = Math.atan2(y - centerY, x - centerX);
-        let newRotation = angleRad * 180 / Math.PI;
-        // Normalize rotation to 0-360 degrees
-        selectedPiece.rotation = (newRotation % 360 + 360) % 360;
-
-      } else {
-        const scaleFactor = 1 + (dx + dy) / 200;
-        if (selectedPiece.type === 'triangle') {
-          selectedPiece.legLength = Math.max(10, selectedPiece.legLength * scaleFactor);
-        } else if (selectedPiece.type === 'rect') {
-          selectedPiece.width = Math.max(10, selectedPiece.width * scaleFactor);
-          selectedPiece.height = Math.max(10, selectedPiece.height * scaleFactor);
-        } else if (selectedPiece.type === 'parallelogram') {
-          selectedPiece.baseWidth = Math.max(10, selectedPiece.baseWidth * scaleFactor);
-          selectedPiece.height = Math.max(10, selectedPiece.height * scaleFactor);
-          selectedPiece.skewOffset = selectedPiece.skewOffset * scaleFactor;
-        }
-      }
-    }
-
-    dragStartX = x; // Update start for next move event
-    dragStartY = y;
-    drawScene();
-  });
-
-  canvas.addEventListener('mouseup', () => {
-    isDragging = false;
-    isResizing = false;
-    resizeHandle = null;
-    drawScene();
-  });
-
-  // Handle clicks outside a piece to deselect
-  canvas.addEventListener('click', (e) => {
-    const { x, y } = getTransformedPoint(e.clientX, e.clientY);
-    let clickedOnPiece = false;
-    for (let i = pieces.length - 1; i >= 0; i--) {
-      const piece = pieces[i];
-      if (isPointInPiece(x, y, piece)) {
-        clickedOnPiece = true;
-        break;
-      }
-    }
-    if (!clickedOnPiece) {
-      selectedPiece = null;
-      drawScene(); // Redraw to hide handles and panel
-    }
-  });
-
-  // --- Initial setup and resize handling ---
   function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    drawScene(); // Redraw scene on resize
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
+    startAnimationCycle()
   }
 
-  window.addEventListener("resize", resizeCanvas);
-  resizeCanvas(); // Initial call
-});
+  window.addEventListener("resize", resizeCanvas)
+  resizeCanvas()
+})
