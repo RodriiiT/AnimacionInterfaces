@@ -14,10 +14,27 @@ document.addEventListener("DOMContentLoaded", () => {
   const pieces = [
     {
       type: "triangle",
+      color: "#000080", // 5. Azul (grande)
+      legLength: 90,
+      startX: 292,
+      startY: 243,
+      startRotation: 180,
+      initialZ: 0,
+      // Azul: hacia la izquierda (disminuir endX)
+      endX: 50,
+      endY: 243,
+      endRotation: 220,
+      endZ: 70,
+      // ⭐ ACTIVADO: Grosor 3D para el triángulo azul grande
+      depthThickness: 16,
+      depthDirection: "backward",
+    },
+    {
+      type: "triangle",
       color: "#FF7F50", // 1. Naranja (pequeño)
       legLength: 45,
       startX: 202,
-      startY: 243,
+      startY: 242.5,
       startRotation: 0,
       initialZ: 0,
       // Naranja: Diagonal hacia la izquierda y abajo
@@ -26,15 +43,15 @@ document.addEventListener("DOMContentLoaded", () => {
       endRotation: -45,
       endZ: 50,
       // ⭐ ACTIVADO: Grosor 3D para el triángulo naranja
-      //depthThickness: 12, // Grosor de la pieza
-      depthDirection: "up", // Mantener la profundidad si no se especifica un cambio
+      depthThickness: 12, // Grosor de la pieza
+      depthDirection: "right", // Mantener la profundidad si no se especifica un cambio
     },
     {
       type: "rect",
       color: "#00B050", // 2. Verde (cuadrado)
       width: 45,
       height: 45,
-      startX: 386,
+      startX: 397,
       startY: 58,
       startRotation: 90,
       initialZ: 0,
@@ -50,8 +67,8 @@ document.addEventListener("DOMContentLoaded", () => {
     {
       type: "triangle",
       color: "#008080", // 3. Teal (pequeño)
-      legLength: 45,
-      startX: 382,
+      legLength: 55,
+      startX: 392,
       startY: 108,
       startRotation: 90,
       initialZ: 0,
@@ -65,47 +82,13 @@ document.addEventListener("DOMContentLoaded", () => {
       depthDirection: "backward",
     },
     {
-      type: "triangle",
-      color: "#FF00FF", // 4. Fucsia (grande)
-      legLength: 90,
-      startX: 292,
-      startY: 154,
-      startRotation: 0,
-      initialZ: 0,
-      // Fucsia: hacia la derecha (aumentar endX)
-      endX: 500,
-      endY: 154,
-      endRotation: 20,
-      endZ: 60,
-      // ⭐ ACTIVADO: Grosor 3D para el triángulo fucsia grande
-      //depthThickness: 18,
-      depthDirection: "forward",
-    },
-    {
-      type: "triangle",
-      color: "#000080", // 5. Azul (grande)
-      legLength: 90,
-      startX: 292,
-      startY: 243,
-      startRotation: 180,
-      initialZ: 0,
-      // Azul: hacia la izquierda (disminuir endX)
-      endX: 50,
-      endY: 243,
-      endRotation: 220,
-      endZ: 70,
-      // ⭐ ACTIVADO: Grosor 3D para el triángulo azul grande
-      //depthThickness: 16,
-      depthDirection: "forward",
-    },
-    {
       type: "parallelogram",
       color: "#FFDB58", // 6. Amarillo (paralelogramo)
-      baseWidth: 48,
+      baseWidth: 50,
       height: 45,
       skewOffset: 45,
-      startX: 248,
-      startY: 266,
+      startX: 250,
+      startY: 265,
       startRotation: 180,
       initialZ: 0,
       // Paralelogramo: hacia abajo (aumentar endY)
@@ -114,8 +97,8 @@ document.addEventListener("DOMContentLoaded", () => {
       endRotation: 135,
       endZ: 55,
       // ⭐ ACTIVADO: Grosor 3D para el paralelogramo amarillo
-      //depthThickness: 14,
-      depthDirection: "down",
+      depthThickness: 14,
+      depthDirection: "backward",
     },
     {
       type: "triangle",
@@ -131,8 +114,25 @@ document.addEventListener("DOMContentLoaded", () => {
       endRotation: 90,
       endZ: 45,
       // ⭐ ACTIVADO: Grosor 3D para el triángulo morado mediano
-      //depthThickness: 13,
-      depthDirection: "down",
+      depthThickness: 13,
+      depthDirection: "right",
+    },
+    {
+      type: "triangle",
+      color: "#FF00FF", // 4. Fucsia (grande)
+      legLength: 90,
+      startX: 293,
+      startY: 154,
+      startRotation: 0,
+      initialZ: 0,
+      // Fucsia: hacia la derecha (aumentar endX)
+      endX: 500,
+      endY: 154,
+      endRotation: 20,
+      endZ: 60,
+      // ⭐ ACTIVADO: Grosor 3D para el triángulo fucsia grande
+      depthThickness: 18,
+      depthDirection: "forward",
     },
   ]
 
@@ -480,7 +480,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let animationFrameId
 
   const INITIAL_PAUSE_DURATION = 500 // 0.5 segundos de pausa inicial con la figura ensamblada (más rápido)
-  const DISASSEMBLE_DURATION = 1500 // 1.5 segundos para desarmar (más rápido)
+  const DISASSEMBLE_DURATION = 1500// 1.5 segundos para desarmar (más rápido)
   const REASSEMBLE_DURATION = 1500 // 1.5 segundos para rearmar (más rápido)
 
   const CYCLE_DURATION = INITIAL_PAUSE_DURATION + DISASSEMBLE_DURATION + REASSEMBLE_DURATION
