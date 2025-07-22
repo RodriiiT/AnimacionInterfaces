@@ -5,392 +5,274 @@ document.addEventListener("DOMContentLoaded", () => {
   const DESIGN_WIDTH = 600
   const DESIGN_HEIGHT = 400
 
-  // === CONFIGURACIONES DE LOS 3 TANGRAMS ===
+  // === CONFIGURACIONES DE LOS 3 TANGRAMS ORGANIZADAS POR COLOR ===
 
-  // Tangram 81 (script2)
-  const tangram81 = [
-    {
+  // Tangram 81 (configuración inicial)
+  const tangram81 = {
+    "#00B050": {
+      // Verde (cuadrado)
       type: "rect",
-      color: "#00B050", // 2. Verde (cuadrado)
+      color: "#00B050",
       width: 45,
       height: 45,
       startX: 238,
       startY: 240,
       startRotation: 90,
-      initialZ: 0,
-      // Verde: hacia abajo (aumentar endY)
-      endX: 238,
-      endY: 350,
-      endRotation: 0,
-      endZ: 30,
-      depthThickness: 15, // Activated
+      depthThickness: 15,
       depthDirection: "backward",
     },
-
-    {
+    "#FF7F50": {
+      // Naranja (pequeño)
       type: "triangle",
-      color: "#FF7F50", // 1. Naranja (pequeño) - Moverlo aquí para que actúe luego.
+      color: "#FF7F50",
       legLength: 43.5,
       startX: 372.5,
       startY: 286,
       startRotation: 180,
-      initialZ: 0,
-      // Naranja: hacia la derecha
-      endX: 550,
-      endY: 286,
-      endRotation: -45,
-      endZ: 50,
-      depthThickness: 12, // Activated
+      depthThickness: 12,
       depthDirection: ["down", "left"],
     },
-    {
+    "#800080": {
+      // Morado (mediano)
       type: "triangle",
-      color: "#800080", // 7. Morado (mediano)
+      color: "#800080",
       legLength: 65,
       startX: 329,
       startY: 286,
       startRotation: 225,
-      initialZ: 0,
-      // Morado: hacia abajo y luego hacia la derecha
-      endX: 450, // Ajustado para ir más a la derecha después de bajar
-      endY: 380, // Ajustado para bajar más
-      endRotation: 90,
-      endZ: 45,
-      depthThickness: 13, // Activated
+      depthThickness: 13,
       depthDirection: ["down"],
     },
-
-    {
+    "#000080": {
+      // Azul (grande)
       type: "triangle",
-      color: "#000080", // 5. Azul (grande)
+      color: "#000080",
       legLength: 88,
       startX: 238,
       startY: 240,
       startRotation: 270,
-      initialZ: 0,
-      // Azul: hacia la izquierda (disminuir endX)
-      endX: 50,
-      endY: 240,
-      endRotation: 220,
-      endZ: 70,
-      depthThickness: 16, // Activated
+      depthThickness: 16,
       depthDirection: "down",
     },
-    {
+    "#FF00FF": {
+      // Fucsia (grande)
       type: "triangle",
-      color: "#FF00FF", // 4. Fucsia (grande)
+      color: "#FF00FF",
       legLength: 89,
       startX: 327,
       startY: 151.5,
       startRotation: 90,
-      initialZ: 0,
-      // Fucsia: hacia arriba y hacia la izquierda
-      endX: 180, // Ajustado para ir más a la izquierda
-      endY: 10, // Se mantiene arriba
-      endRotation: 20,
-      endZ: 60,
-      depthThickness: 18, // Activated
+      depthThickness: 18,
       depthDirection: "backward",
     },
-    {
+    "#FFDB58": {
+      // Amarillo (paralelogramo)
       type: "parallelogram",
-      color: "#FFDB58", // 6. Amarillo (paralelogramo) - EXTENDIDO
-      baseWidth: 48, // ⭐ AUMENTADO de 45 a 67 para llenar el espacio
+      color: "#FFDB58",
+      baseWidth: 48,
       height: 45,
-      skewOffset: -45, // Inverted for mirror effect
-      startX: 350.5, // ⭐ AJUSTADO ligeramente la posición X para centrar mejor
+      skewOffset: -45,
+      startX: 350.5,
       startY: 194,
       startRotation: 270,
-      initialZ: 0,
-      // Paralelogramo: hacia la derecha (aumentar endX)
-      endX: 550, // Modified: Moved further right
-      endY: 196,
-      endRotation: 135,
-      endZ: 55,
-      depthThickness: 14, // Activated
+      depthThickness: 14,
       depthDirection: ["down"],
     },
-
-    {
+    "#008080": {
+      // Teal (pequeño)
       type: "triangle",
-      color: "#008080", // 3. Teal (pequeño)
+      color: "#008080",
       legLength: 45,
       startX: 328,
       startY: 151,
       startRotation: 0,
-      initialZ: 0,
-      // Teal: hacia arriba y hacia la derecha
-      endX: 550, // Adjusted to go further right
-      endY: -50, // Modified: Moved further up
-      endRotation: 135,
-      endZ: 40,
-      depthThickness: 17, // Activated
+      depthThickness: 17,
       depthDirection: ["forward", "up"],
     },
-  ]
+  }
 
-  // Tangram 83 (script original)
-  const tangram83 = [
-    {
+  // Tangram 83 (segunda configuración)
+  const tangram83 = {
+    "#000080": {
+      // Azul (grande)
       type: "triangle",
-      color: "#000080", // 5. Azul (grande)
+      color: "#000080",
       legLength: 90,
       startX: 292,
       startY: 243,
       startRotation: 180,
-      initialZ: 0,
-      // Azul: hacia la izquierda (disminuir endX)
-      endX: 50,
-      endY: 243,
-      endRotation: 220,
-      endZ: 70,
-      // ⭐ ACTIVADO: Grosor 3D para el triángulo azul grande
       depthThickness: 16,
       depthDirection: "backward",
     },
-    {
+    "#FF7F50": {
+      // Naranja (pequeño)
       type: "triangle",
-      color: "#FF7F50", // 1. Naranja (pequeño)
+      color: "#FF7F50",
       legLength: 45,
       startX: 202,
       startY: 242.5,
       startRotation: 0,
-      initialZ: 0,
-      // Naranja: Diagonal hacia la izquierda y abajo
-      endX: 50,
-      endY: 300,
-      endRotation: -45,
-      endZ: 50,
-      // ⭐ ACTIVADO: Grosor 3D para el triángulo naranja
-      depthThickness: 12, // Grosor de la pieza
-      depthDirection: "right", // Mantener la profundidad si no se especifica un cambio
+      depthThickness: 12,
+      depthDirection: "right",
     },
-    {
+    "#00B050": {
+      // Verde (cuadrado)
       type: "rect",
-      color: "#00B050", // 2. Verde (cuadrado)
+      color: "#00B050",
       width: 45,
       height: 45,
       startX: 397,
       startY: 58,
       startRotation: 90,
-      initialZ: 0,
-      // Verde: hacia arriba (disminuir endY)
-      endX: 382,
-      endY: 10,
-      endRotation: 0,
-      endZ: 30,
-      // ⭐ ACTIVADO: Grosor 3D para el cuadrado verde
       depthThickness: 15,
       depthDirection: "backward",
     },
-    {
+    "#008080": {
+      // Teal (pequeño)
       type: "triangle",
-      color: "#008080", // 3. Teal (pequeño)
+      color: "#008080",
       legLength: 55,
       startX: 392,
       startY: 108,
       startRotation: 90,
-      initialZ: 0,
-      // Teal: hacia la derecha (aumentar endX)
-      endX: 550,
-      endY: 108,
-      endRotation: 135,
-      endZ: 40,
-      // ⭐ ACTIVADO: Grosor 3D para el triángulo teal
       depthThickness: 10,
       depthDirection: "backward",
     },
-    {
+    "#FFDB58": {
+      // Amarillo (paralelogramo)
       type: "parallelogram",
-      color: "#FFDB58", // 6. Amarillo (paralelogramo)
+      color: "#FFDB58",
       baseWidth: 50,
       height: 45,
       skewOffset: 45,
       startX: 250,
       startY: 265,
       startRotation: 180,
-      initialZ: 0,
-      // Paralelogramo: hacia abajo (aumentar endY)
-      endX: 248,
-      endY: 350,
-      endRotation: 135,
-      endZ: 55,
-      // ⭐ ACTIVADO: Grosor 3D para el paralelogramo amarillo
       depthThickness: 14,
       depthDirection: "backward",
     },
-    {
+    "#800080": {
+      // Morado (mediano)
       type: "triangle",
-      color: "#800080", // 7. Morado (mediano)
+      color: "#800080",
       legLength: 65,
       startX: 337,
       startY: 108,
       startRotation: 45,
-      initialZ: 0,
-      // Morado: hacia arriba (disminuir endY)
-      endX: 337,
-      endY: 10,
-      endRotation: 90,
-      endZ: 45,
-      // ⭐ ACTIVADO: Grosor 3D para el triángulo morado mediano
       depthThickness: 13,
       depthDirection: "right",
     },
-    {
+    "#FF00FF": {
+      // Fucsia (grande)
       type: "triangle",
-      color: "#FF00FF", // 4. Fucsia (grande)
+      color: "#FF00FF",
       legLength: 90,
       startX: 293,
       startY: 154,
       startRotation: 0,
-      initialZ: 0,
-      // Fucsia: hacia la derecha (aumentar endX)
-      endX: 500,
-      endY: 154,
-      endRotation: 20,
-      endZ: 60,
-      // ⭐ ACTIVADO: Grosor 3D para el triángulo fucsia grande
       depthThickness: 18,
       depthDirection: "forward",
     },
-  ]
+  }
 
-  // Tangram 188 (script3)
-  const tangram188 = [
-    {
+  // Tangram 188 (tercera configuración)
+  const tangram188 = {
+    "#FFDB58": {
+      // Amarillo (paralelogramo)
       type: "parallelogram",
-      color: "#FFDB58", // 6. Amarillo (paralelogramo) - EXTENDIDO
-      baseWidth: 50, // ⭐ AUMENTADO de 45 a 67 para llenar el espacio
+      color: "#FFDB58",
+      baseWidth: 50,
       height: 45,
-      skewOffset: 45, // Inverted for mirror effect
-      startX: 224.6, // ⭐ AJUSTADO ligeramente la posición X para centrar mejor
+      skewOffset: 45,
+      startX: 224.6,
       startY: 211.8,
       startRotation: 90,
-      initialZ: 0,
-      // Paralelogramo: //hacia la izquierda y luego arriba
-      endX: -100, // Modified: Moved further right
-      endY: 100,
-      endRotation: 135,
-      endZ: 55,
-      depthThickness: 14, // Activated
-      depthDirection: ["backward"], 
+      depthThickness: 14,
+      depthDirection: ["backward"],
     },
-    
-    {
+    "#800080": {
+      // Morado (mediano)
       type: "triangle",
-      color: "#800080", // 7. Morado (mediano)
+      color: "#800080",
       legLength: 65,
       startX: 295.8,
       startY: 216,
       startRotation: 135,
-      initialZ: 0,
-      // Morado: //hacia la izquierda
-      endX: -10, // Ajustado para ir más a la derecha después de bajar
-      endY: 380, // Ajustado para bajar más
-      endRotation: 90,
-      endZ: 45,
-      depthThickness: 13, // Activated
+      depthThickness: 13,
       depthDirection: ["left"],
     },
-
-    {
+    "#000080": {
+      // Azul (grande)
       type: "triangle",
-      color: "#000080", // 5. Azul (grande)
+      color: "#000080",
       legLength: 90,
       startX: 293.7,
       startY: 214.7,
       startRotation: 45,
-      initialZ: 0,
-      // Azul: hacia la abajo
-      endX: 500,
-      endY: 300,
-      endRotation: 90,
-      endZ: 0,
-      depthThickness: 13, // Activated
+      depthThickness: 13,
       depthDirection: ["up"],
     },
-    {
+    "#FF00FF": {
+      // Fucsia (grande)
       type: "triangle",
-      color: "#FF00FF", // 4. Fucsia (grande)
+      color: "#FF00FF",
       legLength: 90,
       startX: 340,
       startY: 170,
       startRotation: 90,
-      initialZ: 0,
-      // Fucsia: arriba
-      endX: 180, // Ajustado para ir más a la izquierda
-      endY: 10, // Se mantiene arriba
-      endRotation: 20,
-      endZ: 60,
-      depthThickness: 18, // Activated
+      depthThickness: 18,
       depthDirection: "backward",
     },
-    {
+    "#008080": {
+      // Teal (pequeño)
       type: "triangle",
-      color: "#008080", // 3. Teal (pequeño)
+      color: "#008080",
       legLength: 45,
       startX: 384.5,
       startY: 207.8,
       startRotation: 180,
-      initialZ: 0,
-      // Teal: derecha full
-      endX: 550, // Adjusted to go further right
-      endY: -50, // Modified: Moved further up
-      endRotation: 135,
-      endZ: 40,
-      depthThickness: 12.3, // Activated
+      depthThickness: 12.3,
       depthDirection: ["left"],
     },
-    {
+    "#FF7F50": {
+      // Naranja (pequeño)
       type: "triangle",
-      color: "#FF7F50", // 1. Naranja (pequeño) - Moverlo aquí para que actúe luego.
+      color: "#FF7F50",
       legLength: 45,
       startX: 340.5,
       startY: 207.6,
       startRotation: 0,
-      initialZ: 0,
-      // Naranja: hacia abajo y luego derecha
-      endX: 550,
-      endY: 286,
-      endRotation: -45,
-      endZ: 50,
-      depthThickness: 12, // Activated
+      depthThickness: 12,
       depthDirection: ["right"],
     },
-   
-
-    {
+    "#00B050": {
+      // Verde (cuadrado)
       type: "rect",
-      color: "#00B050", // 2. Verde (cuadrado)
+      color: "#00B050",
       width: 45,
       height: 45,
       startX: 272,
       startY: 125,
       startRotation: 90,
-      initialZ: 0,
-      // Verde: hacia arriba y luego hacia la derecha
-      endX: 238,
-      endY: -50,
-      endRotation: 0,
-      endZ: 30,
-      depthThickness: 15, // Activated
+      depthThickness: 15,
       depthDirection: "backward",
     },
-  ]
+  }
 
-  // === SISTEMA DE ANIMACIÓN UNIFICADO ===
+  // === SISTEMA DE ANIMACIÓN SIMPLIFICADO ===
   let animationStartTime = 0
   let animationFrameId
 
   // Duraciones de cada fase (en milisegundos)
-  const PAUSE_DURATION = 800 // Pausa con tangram ensamblado
-  const DISASSEMBLE_DURATION = 1200 // Tiempo para desarmar
-  const TRANSITION_DURATION = 1500 // Tiempo para moverse a la siguiente configuración
-  const REASSEMBLE_DURATION = 1200 // Tiempo para rearmar
+  const PAUSE_DURATION = 2000 // Pausa con tangram ensamblado
+  const TRANSITION_DURATION = 2500 // Tiempo para moverse a la siguiente configuración
 
   // Duración total de un ciclo completo (3 tangrams)
-  const SINGLE_TANGRAM_CYCLE = PAUSE_DURATION + DISASSEMBLE_DURATION + TRANSITION_DURATION + REASSEMBLE_DURATION
+  const SINGLE_TANGRAM_CYCLE = PAUSE_DURATION + TRANSITION_DURATION
   const TOTAL_CYCLE_DURATION = SINGLE_TANGRAM_CYCLE * 3
+
+  // Colores de las piezas para mapeo consistente
+  const PIECE_COLORS = ["#00B050", "#FF7F50", "#800080", "#000080", "#FF00FF", "#FFDB58", "#008080"]
 
   // Helper functions
   function lerp(start, end, t) {
@@ -421,7 +303,7 @@ document.addEventListener("DOMContentLoaded", () => {
     )
   }
 
-  // Función para obtener la configuración actual y la siguiente
+  // Función para obtener las configuraciones actuales
   function getCurrentConfigurations(elapsedTime) {
     const cycleTime = elapsedTime % TOTAL_CYCLE_DURATION
     const tangramIndex = Math.floor(cycleTime / SINGLE_TANGRAM_CYCLE)
@@ -443,37 +325,23 @@ document.addEventListener("DOMContentLoaded", () => {
     const elapsedTime = timestamp - animationStartTime
     const { currentConfig, nextConfig, phaseTime, tangramIndex } = getCurrentConfigurations(elapsedTime)
 
-    let assemblyProgress = 0
     let transitionProgress = 0
 
     if (phaseTime < PAUSE_DURATION) {
       // Fase 1: Pausa con tangram ensamblado
-      assemblyProgress = 0
       transitionProgress = 0
-    } else if (phaseTime < PAUSE_DURATION + DISASSEMBLE_DURATION) {
-      // Fase 2: Desarmar
-      const phaseProgress = (phaseTime - PAUSE_DURATION) / DISASSEMBLE_DURATION
-      assemblyProgress = easeInOutCubic(phaseProgress)
-      transitionProgress = 0
-    } else if (phaseTime < PAUSE_DURATION + DISASSEMBLE_DURATION + TRANSITION_DURATION) {
-      // Fase 3: Transición a la siguiente configuración
-      const phaseProgress = (phaseTime - PAUSE_DURATION - DISASSEMBLE_DURATION) / TRANSITION_DURATION
-      assemblyProgress = 1
-      transitionProgress = easeInOutCubic(phaseProgress)
     } else {
-      // Fase 4: Rearmar en la nueva configuración
-      const phaseProgress =
-        (phaseTime - PAUSE_DURATION - DISASSEMBLE_DURATION - TRANSITION_DURATION) / REASSEMBLE_DURATION
-      assemblyProgress = easeInOutCubic(1 - phaseProgress)
-      transitionProgress = 1
+      // Fase 2: Transición directa a la siguiente configuración
+      const phaseProgress = (phaseTime - PAUSE_DURATION) / TRANSITION_DURATION
+      transitionProgress = easeInOutCubic(phaseProgress)
     }
 
-    drawScene(currentConfig, nextConfig, assemblyProgress, transitionProgress)
+    drawScene(currentConfig, nextConfig, transitionProgress)
     animationFrameId = requestAnimationFrame(animate)
   }
 
   // Función de dibujo principal
-  function drawScene(currentConfig, nextConfig, assemblyProgress, transitionProgress) {
+  function drawScene(currentConfig, nextConfig, transitionProgress) {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     const scale = Math.min(canvas.width / DESIGN_WIDTH, canvas.height / DESIGN_HEIGHT)
     const offsetX = (canvas.width - DESIGN_WIDTH * scale) / 2
@@ -483,87 +351,84 @@ document.addEventListener("DOMContentLoaded", () => {
     ctx.translate(offsetX, offsetY)
     ctx.scale(scale, scale)
 
-    currentConfig.forEach((currentPiece, index) => {
-      const nextPiece = nextConfig[index]
+    // Dibujar cada pieza mapeada por color
+    PIECE_COLORS.forEach((color) => {
+      const currentPiece = currentConfig[color]
+      const nextPiece = nextConfig[color]
+
+      if (!currentPiece || !nextPiece) return
 
       // Interpolar entre configuración actual y siguiente
-      const baseStartX = lerp(currentPiece.startX, nextPiece.startX, transitionProgress)
-      const baseStartY = lerp(currentPiece.startY, nextPiece.startY, transitionProgress)
-      const baseStartRotation = lerp(currentPiece.startRotation, nextPiece.startRotation, transitionProgress)
+      const currentX = lerp(currentPiece.startX, nextPiece.startX, transitionProgress)
+      const currentY = lerp(currentPiece.startY, nextPiece.startY, transitionProgress)
+      const currentRotation = lerp(currentPiece.startRotation, nextPiece.startRotation, transitionProgress)
 
-      const baseEndX = lerp(currentPiece.endX, nextPiece.endX, transitionProgress)
-      const baseEndY = lerp(currentPiece.endY, nextPiece.endY, transitionProgress)
-      const baseEndRotation = lerp(currentPiece.endRotation, nextPiece.endRotation, transitionProgress)
+      // Interpolar propiedades de profundidad y dimensiones
+      const currentThickness = lerp(currentPiece.depthThickness, nextPiece.depthThickness, transitionProgress)
 
-      // Interpolar propiedades de profundidad
-      const baseThickness = lerp(currentPiece.depthThickness, nextPiece.depthThickness, transitionProgress)
+      // Interpolar dimensiones si son diferentes
+      let currentWidth = currentPiece.width
+      let currentHeight = currentPiece.height
+      let currentLegLength = currentPiece.legLength
+      let currentBaseWidth = currentPiece.baseWidth
 
-      // Para las dimensiones (si son diferentes entre configuraciones)
-      let baseWidth = currentPiece.width
-      let baseHeight = currentPiece.height
-      let baseLegLength = currentPiece.legLength
-      let baseBaseWidth = currentPiece.baseWidth
-
-      if (nextPiece.width !== undefined) {
-        baseWidth = lerp(currentPiece.width, nextPiece.width, transitionProgress)
+      if (currentPiece.width !== undefined && nextPiece.width !== undefined) {
+        currentWidth = lerp(currentPiece.width, nextPiece.width, transitionProgress)
       }
-      if (nextPiece.height !== undefined) {
-        baseHeight = lerp(currentPiece.height, nextPiece.height, transitionProgress)
+      if (currentPiece.height !== undefined && nextPiece.height !== undefined) {
+        currentHeight = lerp(currentPiece.height, nextPiece.height, transitionProgress)
       }
-      if (nextPiece.legLength !== undefined) {
-        baseLegLength = lerp(currentPiece.legLength, nextPiece.legLength, transitionProgress)
+      if (currentPiece.legLength !== undefined && nextPiece.legLength !== undefined) {
+        currentLegLength = lerp(currentPiece.legLength, nextPiece.legLength, transitionProgress)
       }
-      if (nextPiece.baseWidth !== undefined) {
-        baseBaseWidth = lerp(currentPiece.baseWidth, nextPiece.baseWidth, transitionProgress)
+      if (currentPiece.baseWidth !== undefined && nextPiece.baseWidth !== undefined) {
+        currentBaseWidth = lerp(currentPiece.baseWidth, nextPiece.baseWidth, transitionProgress)
       }
 
-      // Posición y rotación actuales basadas en el progreso de ensamblaje
-      const currentX = lerp(baseStartX, baseEndX, assemblyProgress)
-      const currentY = lerp(baseStartY, baseEndY, assemblyProgress)
-      const currentRotation = lerp(baseStartRotation, baseEndRotation, assemblyProgress)
-
-      // Determinar dirección de profundidad (usar la de la configuración actual)
+      // Determinar dirección de profundidad (cambiar gradualmente)
       const depthDirection = transitionProgress < 0.5 ? currentPiece.depthDirection : nextPiece.depthDirection
 
       // Dibujar la pieza
       switch (currentPiece.type) {
         case "triangle":
           drawTriangle(
-            currentPiece.color,
+            color,
             currentX,
             currentY,
             0,
-            baseLegLength,
-            baseLegLength,
+            currentLegLength,
+            currentLegLength,
             currentRotation,
-            baseThickness,
+            currentThickness,
             depthDirection,
           )
           break
         case "rect":
           drawRect(
-            currentPiece.color,
+            color,
             currentX,
             currentY,
             0,
-            baseWidth,
-            baseHeight,
+            currentWidth,
+            currentHeight,
             currentRotation,
-            baseThickness,
+            currentThickness,
             depthDirection,
           )
           break
         case "parallelogram":
+          // Interpolar skewOffset también
+          const currentSkewOffset = lerp(currentPiece.skewOffset, nextPiece.skewOffset, transitionProgress)
           drawParallelogram(
-            currentPiece.color,
+            color,
             currentX,
             currentY,
             0,
-            baseBaseWidth,
-            baseHeight,
-            currentPiece.skewOffset,
+            currentBaseWidth,
+            currentHeight,
+            currentSkewOffset,
             currentRotation,
-            baseThickness,
+            currentThickness,
             depthDirection,
           )
           break
